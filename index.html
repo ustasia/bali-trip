@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0f3a3e" />
+<title>발리 가족 여행 · 2026.08 · v0.6</title>
+<!-- PWA -->
+<link rel="manifest" href="./manifest.json" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="발리여행" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sand-50: #faf6ef; --sand-100: #f3ecdf; --sand-200: #e8dcc7; --sand-300: #d4c1a3;
+    --ocean-900: #0f3a3e; --ocean-800: #154851; --ocean-700: #1f6b6e; --ocean-500: #3d9ba0; --ocean-300: #95cdcd;
+    --coral: #e85d4f; --coral-soft: #f4a89e; --gold: #d4a574;
+    --ink-900: #1a2326; --ink-700: #3a4548; --ink-500: #6b7578; --ink-300: #a8b0b3;
+    --green: #5a8a5e; --green-soft: #e6f0e7; --warning: #c47a3d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    background: var(--sand-50); color: var(--ink-900);
+    line-height: 1.55; font-size: 15px;
+    overscroll-behavior-y: contain; padding-bottom: 80px;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: radial-gradient(ellipse at top right, rgba(149,205,205,0.12), transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(232,93,79,0.06), transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+  .container { max-width: 480px; margin: 0 auto; position: relative; z-index: 1; }
+
+  /* === HERO === */
+  .hero {
+    padding: 28px 22px 36px;
+    background: linear-gradient(160deg, var(--ocean-900) 0%, var(--ocean-700) 100%);
+    color: var(--sand-50); border-radius: 0 0 32px 32px;
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, var(--coral-soft) 0%, transparent 70%); opacity: 0.25;
+  }
+  .hero-meta { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ocean-300); font-weight: 500; margin-bottom: 10px; }
+  .hero-title { font-family: 'Pretendard', sans-serif; font-weight: 400; font-size: 38px; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .hero-title em { font-style: italic; font-weight: 300; color: var(--gold); }
+  .hero-sub { font-size: 14px; color: var(--sand-200); margin-top: 12px; }
+  .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; position: relative; z-index: 1; }
+  .stat { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(10px); border-radius: 14px; padding: 12px 10px; text-align: center; }
+  .stat-num { font-family: 'Pretendard', sans-serif; font-size: 22px; font-weight: 500; color: var(--gold); display: block; line-height: 1; }
+  .stat-label { font-size: 10px; color: var(--sand-200); margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* === FAMILY === */
+  .family-band {
+    background: var(--sand-100); padding: 14px 22px;
+    display: flex; align-items: center; gap: 12px;
+    margin: -10px 16px 0; border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(15,58,62,0.08); position: relative; z-index: 2;
+  }
+  .family-icons { display: flex; }
+  .family-icon { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid var(--sand-50); margin-left: -6px; }
+  .family-icon:first-child { margin-left: 0; }
+  .family-icon.adult { background: var(--ocean-700); color: var(--sand-50); }
+  .family-icon.kid { background: var(--coral); color: white; }
+  .family-text { font-size: 13px; color: var(--ink-700); }
+  .family-text strong { color: var(--ink-900); font-weight: 600; }
+
+  /* === OVERVIEW TOGGLE === */
+  .overview { margin: 14px 16px 0; }
+  .overview-toggle {
+    width: 100%; background: white; border: 1px solid var(--sand-200);
+    border-radius: 14px; padding: 13px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; font-family: inherit;
+  }
+  .overview-toggle-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ocean-900); }
+  .overview-toggle-arrow { font-size: 12px; color: var(--ink-500); transition: transform 0.25s; }
+  .overview.open .overview-toggle-arrow { transform: rotate(180deg); }
+  .overview-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background: white; border-radius: 0 0 14px 14px;
+    margin-top: -1px; border: 1px solid var(--sand-200); border-top: none;
+    padding: 0 16px;
+  }
+  .overview.open .overview-body { max-height: 600px; padding: 4px 16px 16px; }
+  .overview-body p { font-size: 13px; color: var(--ink-700); line-height: 1.6; margin-bottom: 10px; }
+  .overview-body p:last-child { margin-bottom: 0; }
+  .overview-body strong { color: var(--ocean-900); font-weight: 600; }
+
+  /* === TABS === */
+  .tabs { display: flex; gap: 6px; padding: 18px 16px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex-shrink: 0; padding: 9px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink-500); background: transparent; border: 1px solid var(--sand-300); cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+  .tab.active { background: var(--ocean-900); color: var(--sand-50); border-color: var(--ocean-900); }
+
+  .panel { display: none; padding: 0 16px; }
+  .panel.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-title { font-family: 'Pretendard', sans-serif; font-size: 22px; font-weight: 500; letter-spacing: -0.01em; margin: 8px 4px 14px; display: flex; align-items: baseline; gap: 10px; }
+  .section-title small { font-family: 'Pretendard', sans-serif; font-size: 11px; color: var(--ink-500); font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; }
+
+  /* === REGION GROUP (일정) === */
+  .region-group { margin-bottom: 22px; }
+  .region-group-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; margin-bottom: 10px;
+    border-radius: 14px;
+    background: var(--sand-100);
+    border-left: 5px solid var(--ocean-700);
+  }
+  .region-group.transit .region-group-head { border-left-color: var(--gold); }
+  .region-group.island .region-group-head { border-left-color: var(--ocean-500); }
+  .region-group.ubud .region-group-head { border-left-color: var(--green); }
+  .region-group.sanur .region-group-head { border-left-color: var(--coral); }
+  .region-group.travel .region-group-head { border-left-color: var(--ink-300); }
+  .region-group-icon { font-size: 20px; }
+  .region-group-info { flex: 1; }
+  .region-group-name { font-family: 'Pretendard', sans-serif; font-size: 17px; font-weight: 600; color: var(--ocean-900); line-height: 1.1; }
+  .region-group-sub { font-size: 11px; color: var(--ink-500); margin-top: 2px; letter-spacing: 0.3px; }
+  .region-group-body { display: flex; flex-direction: column; gap: 10px; padding-left: 4px; }
+
+  /* === DAY CARD (일정) === */
+  .day-card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 0; border: 1px solid var(--sand-200); position: relative; overflow: hidden; }
+  .day-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--ocean-700); }
+  .day-card.transit::before { background: var(--gold); }
+  .day-card.island::before { background: var(--ocean-500); }
+  .day-card.ubud::before { background: var(--green); }
+  .day-card.sanur::before { background: var(--coral); }
+  .day-card.travel::before { background: var(--ink-300); }
+  .day-card-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+  .day-date { font-family: 'Pretendard', sans-serif; font-size: 26px; font-weight: 500; line-height: 1; color: var(--ocean-900); }
+  .day-date sup { font-size: 13px; color: var(--ink-500); font-weight: 400; margin-left: 3px; vertical-align: super; }
+  .day-tag { font-size: 10px; padding: 4px 10px; border-radius: 100px; background: var(--sand-100); color: var(--ink-700); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+  .day-tag.confirmed { background: var(--green-soft); color: #3d6b41; }
+  .day-tag.pending { background: #fbe9d6; color: #8d4f1a; }
+  .day-title { font-size: 14px; color: var(--ink-700); margin-bottom: 14px; font-weight: 500; }
+  .timeline { border-left: 1px dashed var(--sand-300); padding-left: 14px; margin-left: 4px; }
+  .timeline-item { margin-bottom: 12px; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -19px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--ocean-500); border: 2px solid white; box-shadow: 0 0 0 1px var(--ocean-300); }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-time { font-size: 11px; color: var(--ocean-700); font-weight: 600; letter-spacing: 0.5px; }
+  .timeline-text { font-size: 13.5px; color: var(--ink-900); margin-top: 2px; }
+  .timeline-text strong { color: var(--ocean-900); font-weight: 600; }
+  .timeline-note { font-size: 11.5px; color: var(--ink-500); margin-top: 3px; font-style: italic; }
+
+  /* === STAY CARD (개선) === */
+  .stay-card {
+    background: white; border-radius: 18px; overflow: hidden;
+    margin-bottom: 14px; border: 1px solid var(--sand-200);
+  }
+  .stay-thumb {
+    width: 100%; aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, var(--sand-200) 0%, var(--sand-300) 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 60px; opacity: 0.95;
+    background-size: cover; background-position: center;
+    position: relative;
+  }
+  .stay-thumb.empty::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--ocean-700), var(--ocean-500)); opacity: 0.6;
+  }
+  .stay-thumb > span { position: relative; z-index: 1; }
+  .stay-body { padding: 16px; }
+  .stay-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+  .stay-name { font-family: 'Pretendard', sans-serif; font-size: 18px; font-weight: 500; line-height: 1.25; color: var(--ocean-900); }
+  .stay-dates { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+  .stay-region {
+    font-size: 10px; padding: 4px 10px; border-radius: 100px;
+    background: var(--sand-100); color: var(--ink-700);
+    font-weight: 600; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+  .stay-desc {
+    font-size: 13px; color: var(--ink-700); line-height: 1.5;
+    margin: 10px 0; padding-bottom: 10px;
+    border-bottom: 1px dashed var(--sand-200);
+  }
+  .stay-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .stay-price-box { display: flex; flex-direction: column; }
+  .stay-price-label { font-size: 10px; color: var(--ink-500); letter-spacing: 0.5px; text-transform: uppercase; }
+  .stay-price-val { font-family: 'Pretendard', sans-serif; font-size: 17px; font-weight: 600; color: var(--coral); }
+  .stay-price-val.small { color: var(--ink-500); font-size: 13px; }
+  .stay-map-btn {
+    background: var(--ocean-900); color: var(--sand-50);
+    text-decoration: none; padding: 9px 14px;
+    border-radius: 10px; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .stay-map-btn:active { background: var(--ocean-700); }
+
+  /* === BOOKING RECORD TAB === */
+  .rec-table { background: white; border-radius: 14px; overflow: hidden; border: 1px solid var(--sand-200); margin-bottom: 12px; }
+  .rec-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 14px; border-bottom: 1px solid var(--sand-100); }
+  .rec-row:last-child { border-bottom: none; }
+  .rec-name { font-family: 'Pretendard', sans-serif; font-size: 14px; color: var(--ocean-900); font-weight: 600; line-height: 1.3; }
+  .rec-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin-top: 8px; font-size: 11px; }
+  .rec-meta-row { display: flex; flex-direction: column; }
+  .rec-meta-label { color: var(--ink-500); font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .rec-meta-val { color: var(--ink-900); font-weight: 500; font-size: 11.5px; }
+  .rec-status { flex-shrink: 0; font-size: 10px; padding: 4px 9px; border-radius: 100px; font-weight: 600; align-self: start; }
+  .rec-status.confirmed { background: var(--green-soft); color: #3d6b41; }
+  .rec-status.pending { background: #fbe9d6; color: #8d4f1a; }
+  .rec-amount { font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 600; color: var(--ocean-900); }
+  .rec-amount.pending { color: var(--ink-300); font-style: italic; font-size: 12px; }
+
+  /* === EXPENSE === */
+  .subtabs { display: flex; gap: 0; margin: 0 0 16px; background: var(--sand-100); border-radius: 12px; padding: 4px; }
+  .subtab { flex: 1; padding: 9px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--ink-500); background: transparent; border: none; cursor: pointer; transition: all 0.2s; font-family: inherit; text-align: center; }
+  .subtab.active { background: white; color: var(--ocean-900); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .subpanel { display: none; }
+  .subpanel.active { display: block; animation: fadeIn 0.2s ease; }
+
+  /* Daily total bar */
+  .daily-total-bar { background: linear-gradient(135deg, var(--ocean-900), var(--ocean-700)); color: var(--sand-50); border-radius: 18px; padding: 20px; margin-bottom: 14px; text-align: center; }
+  .daily-total-label { font-size: 10px; color: var(--ocean-300); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .daily-total-num { font-family: 'Pretendard', sans-serif; font-size: 36px; font-weight: 500; color: var(--gold); margin-top: 4px; }
+  .daily-total-sub { font-size: 12px; color: var(--sand-200); margin-top: 6px; }
+
+  /* Day-selector buttons (horizontal scroll) */
+  .day-selector-wrap { margin-bottom: 14px; }
+  .day-selector-label { font-size: 11px; color: var(--ink-500); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; padding: 0 4px; }
+  .day-buttons {
+    display: flex; gap: 8px; overflow-x: auto;
+    padding: 4px 4px 8px; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .day-buttons::-webkit-scrollbar { display: none; }
+  .day-btn {
+    flex-shrink: 0; min-width: 64px;
+    background: white; border: 1.5px solid var(--sand-200);
+    border-radius: 12px; padding: 8px 10px;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .day-btn:active { transform: scale(0.96); }
+  .day-btn.active { border-color: var(--ocean-700); background: var(--ocean-900); color: var(--sand-50); }
+  .day-btn-num { font-family: 'Pretendard', sans-serif; font-size: 16px; font-weight: 600; line-height: 1; color: var(--ocean-900); }
+  .day-btn.active .day-btn-num { color: var(--gold); }
+  .day-btn-wk { font-size: 9px; color: var(--ink-500); font-weight: 600; }
+  .day-btn.active .day-btn-wk { color: var(--ocean-300); }
+  .day-btn-sum { font-size: 10px; color: var(--coral); font-weight: 700; margin-top: 2px; font-family: 'JetBrains Mono', monospace; min-height: 12px; }
+  .day-btn.active .day-btn-sum { color: var(--gold); }
+  .day-btn.has-data { border-color: var(--coral-soft); }
+  .day-btn.has-data.active { border-color: var(--gold); }
+
+  /* Selected day card */
+  .day-detail-card {
+    background: white; border-radius: 16px; padding: 16px;
+    margin-bottom: 14px; border: 1px solid var(--sand-200);
+  }
+  .day-detail-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 10px; padding-bottom: 10px;
+    border-bottom: 1px dashed var(--sand-200);
+  }
+  .day-detail-title { font-family: 'Pretendard', sans-serif; font-size: 18px; color: var(--ocean-900); font-weight: 600; }
+  .day-detail-title small { font-family: 'Pretendard', sans-serif; font-size: 11px; color: var(--ink-500); font-weight: 500; margin-left: 6px; }
+  .day-detail-sum { font-family: 'Pretendard', sans-serif; font-size: 18px; color: var(--coral); font-weight: 600; }
+  .day-detail-empty { text-align: center; padding: 20px 0; color: var(--ink-500); font-size: 13px; }
+
+  .entry-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sand-100); align-items: center; }
+  .entry-row:last-child { border-bottom: none; }
+  .entry-cat { width: 28px; height: 28px; border-radius: 8px; background: var(--sand-100); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .entry-text { font-size: 13px; color: var(--ink-900); line-height: 1.3; min-width: 0; }
+  .entry-text small { color: var(--ink-500); font-size: 10px; display: block; margin-top: 2px; }
+  .entry-amount { font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 600; color: var(--ocean-900); white-space: nowrap; }
+  .entry-del { background: transparent; border: none; color: var(--ink-300); font-size: 16px; cursor: pointer; padding: 2px 6px; border-radius: 6px; }
+  .entry-del:active { background: #fadcd8; color: var(--coral); }
+
+  /* Input card */
+  .input-card { background: white; border-radius: 18px; padding: 18px; margin-bottom: 16px; border: 1px solid var(--sand-200); }
+  .input-card-title { font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 600; color: var(--ocean-900); margin-bottom: 12px; }
+  .input-section { margin-bottom: 12px; }
+  .input-section:last-child { margin-bottom: 0; }
+  .input-label { font-size: 10px; color: var(--ink-500); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .cat-btn { background: var(--sand-50); border: 1.5px solid var(--sand-200); border-radius: 12px; padding: 10px 4px; cursor: pointer; font-family: inherit; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .cat-btn:active { transform: scale(0.95); }
+  .cat-btn.selected { border-color: var(--ocean-700); background: var(--ocean-900); color: var(--sand-50); }
+  .cat-btn-icon { font-size: 18px; }
+  .cat-btn-label { font-size: 10px; font-weight: 600; }
+
+  .amount-input-row { display: flex; gap: 8px; align-items: stretch; }
+  .currency-toggle { display: flex; background: var(--sand-100); border-radius: 10px; padding: 3px; flex-shrink: 0; }
+  .currency-btn { padding: 8px 12px; border: none; background: transparent; border-radius: 7px; font-family: inherit; font-size: 12px; font-weight: 700; color: var(--ink-500); cursor: pointer; }
+  .currency-btn.active { background: white; color: var(--ocean-900); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .amount-input { flex: 1; border: 1.5px solid var(--sand-200); border-radius: 10px; padding: 10px 12px; font-family: 'JetBrains Mono', monospace; font-size: 16px; color: var(--ink-900); background: white; -moz-appearance: textfield; min-width: 0; }
+  .amount-input::-webkit-outer-spin-button, .amount-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .amount-input:focus { outline: none; border-color: var(--ocean-500); }
+  .memo-input { width: 100%; border: 1.5px solid var(--sand-200); border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: 13px; color: var(--ink-900); background: white; }
+  .memo-input:focus { outline: none; border-color: var(--ocean-500); }
+
+  .add-btn { width: 100%; background: var(--ocean-900); color: var(--sand-50); border: none; border-radius: 12px; padding: 13px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 4px; letter-spacing: 0.5px; }
+  .add-btn:active { background: var(--ocean-700); }
+  .add-btn:disabled { background: var(--ink-300); cursor: not-allowed; }
+  .live-preview { background: var(--sand-50); border: 1px dashed var(--sand-300); border-radius: 10px; padding: 7px 10px; margin-top: 6px; font-size: 11px; color: var(--ink-500); text-align: center; font-family: 'JetBrains Mono', monospace; }
+  .live-preview strong { color: var(--coral); font-size: 12px; }
+
+  .cat-summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+  .cat-sum-card { background: white; border: 1px solid var(--sand-200); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .cat-sum-icon { width: 30px; height: 30px; border-radius: 8px; background: var(--sand-100); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .cat-sum-info { flex: 1; min-width: 0; }
+  .cat-sum-label { font-size: 10px; color: var(--ink-500); }
+  .cat-sum-num { font-family: 'Pretendard', sans-serif; font-size: 14px; font-weight: 600; color: var(--ocean-900); }
+
+  /* === EXPLORE TAB === */
+  .region-tabs { display: flex; gap: 6px; padding: 0 0 12px; overflow-x: auto; scrollbar-width: none; margin-bottom: 4px; }
+  .region-tabs::-webkit-scrollbar { display: none; }
+  .region-tab { flex-shrink: 0; padding: 8px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; color: var(--ink-500); background: white; border: 1px solid var(--sand-300); cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .region-tab.active { background: var(--ocean-900); color: var(--sand-50); border-color: var(--ocean-900); }
+
+  .type-filter { display: flex; gap: 6px; margin-bottom: 14px; background: var(--sand-100); border-radius: 12px; padding: 4px; }
+  .type-btn { flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--ink-500); cursor: pointer; font-family: inherit; }
+  .type-btn.active { background: white; color: var(--ocean-900); box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+
+  .place-card {
+    background: white; border-radius: 14px; padding: 14px;
+    margin-bottom: 10px; border: 1px solid var(--sand-200);
+    position: relative;
+  }
+  .place-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 4px; }
+  .place-name-row { flex: 1; min-width: 0; }
+  .place-name { font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 600; color: var(--ocean-900); line-height: 1.25; }
+  .place-name-row .place-icon-inline { font-size: 14px; margin-right: 4px; }
+  .place-fav {
+    background: transparent; border: none; cursor: pointer;
+    font-size: 18px; padding: 4px; line-height: 1; opacity: 0.3;
+  }
+  .place-fav.active { opacity: 1; }
+  .place-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .place-tag { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: var(--sand-100); color: var(--ink-700); font-weight: 600; }
+  .place-tag.signature { background: #fef3e0; color: var(--warning); }
+  .place-tag.kid { background: #fadcd8; color: #8a2e26; }
+  .place-tag.veg { background: var(--green-soft); color: #3d6b41; }
+  .place-desc { font-size: 12.5px; color: var(--ink-700); margin-top: 8px; line-height: 1.5; }
+  .place-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--sand-200); }
+  .place-meta-item { text-align: center; }
+  .place-meta-label { font-size: 9px; color: var(--ink-500); letter-spacing: 0.5px; text-transform: uppercase; }
+  .place-meta-val { font-size: 12px; color: var(--ink-900); font-weight: 600; margin-top: 1px; }
+  .place-actions { display: flex; gap: 8px; margin-top: 10px; }
+  .place-map-btn {
+    flex: 1; background: var(--ocean-900); color: var(--sand-50);
+    text-decoration: none; padding: 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600;
+    display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  }
+  .place-map-btn:active { background: var(--ocean-700); }
+
+  /* === FX === */
+  .fx-rate-bar { background: linear-gradient(135deg, var(--ocean-900), var(--ocean-700)); color: var(--sand-50); border-radius: 18px; padding: 18px; margin-bottom: 16px; text-align: center; }
+  .fx-rate-label { font-size: 10px; color: var(--ocean-300); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+  .fx-rate-value { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 500; color: var(--gold); margin-top: 6px; }
+  .fx-rate-edit { margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: var(--sand-200); }
+  .fx-rate-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); color: white; padding: 5px 10px; border-radius: 8px; font-size: 12px; width: 100px; text-align: center; font-family: 'JetBrains Mono', monospace; }
+  .fx-rate-input:focus { outline: none; border-color: var(--gold); }
+  .fx-update-btn { background: var(--gold); color: var(--ocean-900); border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+  .fx-calculator { background: white; border-radius: 18px; padding: 18px; margin-bottom: 16px; border: 1px solid var(--sand-200); }
+  .fx-row { display: flex; align-items: center; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--sand-100); }
+  .fx-row:last-child { border-bottom: none; }
+  .fx-flag { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .fx-flag.idr { background: linear-gradient(180deg, #ce1126 50%, #ffffff 50%); }
+  .fx-flag.krw { background: linear-gradient(135deg, #003478 0%, #c60c30 100%); color: white; font-weight: 700; font-family: 'Pretendard', sans-serif; font-size: 22px; }
+  .fx-input-wrap { flex: 1; min-width: 0; }
+  .fx-currency-label { font-size: 11px; color: var(--ink-500); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 3px; }
+  .fx-input { width: 100%; border: none; background: transparent; font-family: 'Pretendard', sans-serif; font-size: 26px; font-weight: 500; color: var(--ocean-900); padding: 0; -moz-appearance: textfield; }
+  .fx-input::-webkit-outer-spin-button, .fx-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .fx-input:focus { outline: none; }
+
+  /* === CHECKLIST === */
+  .checklist-section { background: white; border-radius: 18px; padding: 18px; margin-bottom: 14px; border: 1px solid var(--sand-200); }
+  .checklist-title { font-family: 'Pretendard', sans-serif; font-size: 17px; font-weight: 500; color: var(--ocean-900); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--sand-100); cursor: pointer; user-select: none; }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { width: 20px; height: 20px; border: 2px solid var(--sand-300); border-radius: 6px; flex-shrink: 0; margin-top: 1px; transition: all 0.2s; position: relative; }
+  .check-item.done .check-box { background: var(--ocean-700); border-color: var(--ocean-700); }
+  .check-item.done .check-box::after { content: '✓'; position: absolute; color: white; font-size: 13px; font-weight: 700; top: -2px; left: 3px; }
+  .check-text { font-size: 13.5px; color: var(--ink-900); flex: 1; line-height: 1.4; }
+  .check-item.done .check-text { color: var(--ink-300); text-decoration: line-through; }
+
+  /* === INFO === */
+  .info-box { background: linear-gradient(135deg, #fef9f5 0%, #fdf3eb 100%); border-left: 3px solid var(--coral); padding: 14px 16px; border-radius: 12px; margin-bottom: 14px; }
+  .info-box-title { font-size: 12px; color: var(--coral); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .info-box-text { font-size: 13px; color: var(--ink-700); line-height: 1.5; }
+
+  /* === FOOTER === */
+  .footer-note { text-align: center; padding: 30px 20px; color: var(--ink-500); font-size: 11px; letter-spacing: 1px; }
+  .footer-note em { font-family: 'Pretendard', sans-serif; font-style: italic; color: var(--ocean-700); font-size: 13px; display: block; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header class="hero">
+    <div class="hero-meta">2026 · 08 · Family Trip · v0.6</div>
+    <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
+    <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">13</span><span class="stat-label">DAYS</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">CITIES</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">FAMILY</span></div>
+    </div>
+  </header>
+
+  <div class="family-band">
+    <div class="family-icons">
+      <span class="family-icon adult">👨</span>
+      <span class="family-icon adult">👩</span>
+      <span class="family-icon kid">👦</span>
+      <span class="family-icon kid">🧒</span>
+    </div>
+    <div class="family-text"><strong>4인 가족</strong> · 부부 + 7세 형아 + 3세 동생</div>
+  </div>
+
+  <div class="overview" id="overview">
+    <button class="overview-toggle" onclick="document.getElementById('overview').classList.toggle('open')">
+      <span class="overview-toggle-label">📖 여행 개요</span>
+      <span class="overview-toggle-arrow">▼</span>
+    </button>
+    <div class="overview-body">
+      <p>부부와 두 아이(7세·3세)의 발리·길리 가족 여행. 호치민을 경유해 발리로 들어가는 <strong>11박 12일</strong> 일정이다.</p>
+      <p>동선은 호치민(1박) → 빠당바이(1박) → 길리 트라왕안(4박) → 우붓(3박) → 사누르(3박). <strong>길리 트라왕안 재방문</strong>이 이번 여행의 중심이며, 거점마다 분위기가 다르다. 길리는 해변과 스노클링, 우붓은 자연과 동물원, 사누르는 잔잔한 해변과 쿠타 서핑.</p>
+      <p>관광을 많이 넣기보다 아이들 페이스에 맞춰 휴양과 체험의 균형을 둔다. 무리하지 않고 가족이 함께 쉬면서 한두 가지 특별한 경험을 남기는 것이 목표.</p>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="itinerary">일정</button>
+    <button class="tab" data-tab="stay">숙소</button>
+    <button class="tab" data-tab="expense">가계부</button>
+    <button class="tab" data-tab="explore">탐색</button>
+    <button class="tab" data-tab="record">예약내역</button>
+    <button class="tab" data-tab="fx">환율</button>
+    <button class="tab" data-tab="checklist">체크리스트</button>
+  </nav>
+
+  <!-- PANEL: ITINERARY -->
+  <main class="panel active" id="panel-itinerary">
+    <h2 class="section-title">일정 <small>11박 12일</small></h2>
+
+    <!-- 호치민 -->
+    <div class="region-group transit">
+      <div class="region-group-head">
+        <span class="region-group-icon">🛬</span>
+        <div class="region-group-info">
+          <div class="region-group-name">호치민</div>
+          <div class="region-group-sub">8.5 → 8.6 · 1박 · 경유</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card transit">
+          <div class="day-card-head"><div><span class="day-date">8.5<sup>화</sup></span></div><span class="day-tag pending">도착·시내</span></div>
+          <div class="day-title">인천 → 호치민, 1군 시내 풀가동</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">10:35</div><div class="timeline-text"><strong>VN409</strong> 인천 → 호치민</div></div>
+            <div class="timeline-item"><div class="timeline-time">14:00</div><div class="timeline-text">탄손낫 도착, ibis 체크인</div></div>
+            <div class="timeline-item"><div class="timeline-time">17:00</div><div class="timeline-text">Grab → 1군, 통일궁 외관</div></div>
+            <div class="timeline-item"><div class="timeline-time">17:30</div><div class="timeline-text">노트르담 성당 + 중앙우체국</div></div>
+            <div class="timeline-item"><div class="timeline-time">18:30</div><div class="timeline-text">벤탄 마켓 인근 저녁</div></div>
+            <div class="timeline-item"><div class="timeline-time">20:00</div><div class="timeline-text">Bitexco Sky Deck 야경 / 벤탄 야시장</div></div>
+            <div class="timeline-item"><div class="timeline-time">21:30</div><div class="timeline-text">Grab → ibis 복귀</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 빠당바이 -->
+    <div class="region-group travel">
+      <div class="region-group-head">
+        <span class="region-group-icon">🤿</span>
+        <div class="region-group-info">
+          <div class="region-group-name">빠당바이</div>
+          <div class="region-group-sub">8.6 → 8.7 · 1박 · 보트 전날</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card travel">
+          <div class="day-card-head"><div><span class="day-date">8.6<sup>수</sup></span></div><span class="day-tag confirmed">이동</span></div>
+          <div class="day-title">호치민 → 덴파사르 → 빠당바이</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">06:30</div><div class="timeline-text">ibis 셔틀로 공항</div></div>
+            <div class="timeline-item"><div class="timeline-time">10:10</div><div class="timeline-text"><strong>VN641</strong> 호치민 → 덴파사르</div></div>
+            <div class="timeline-item"><div class="timeline-time">14:00</div><div class="timeline-text">덴파사르 도착, 입국 수속</div><div class="timeline-note">e-VOA·Love Bali·All Indonesia 사전 준비</div></div>
+            <div class="timeline-item"><div class="timeline-time">16:00</div><div class="timeline-text">픽업 → <strong>Absolute Scuba Bali</strong></div><div class="timeline-note">차로 1.5~2시간</div></div>
+            <div class="timeline-item"><div class="timeline-time">19:00</div><div class="timeline-text">체크인, 저녁, 일찍 취침</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 길리 트라왕안 -->
+    <div class="region-group island">
+      <div class="region-group-head">
+        <span class="region-group-icon">🏝️</span>
+        <div class="region-group-info">
+          <div class="region-group-name">길리 트라왕안</div>
+          <div class="region-group-sub">8.7 → 8.11 · 4박 · Villa Almarik</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card island">
+          <div class="day-card-head"><div><span class="day-date">8.7<sup>목</sup></span></div><span class="day-tag confirmed">도착</span></div>
+          <div class="day-title">빠당바이 → 길리 (보트 1.5h)</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">08:00</div><div class="timeline-text"><strong>Bluewater Express</strong> 출발</div><div class="timeline-note">멀미약 30분 전 복용</div></div>
+            <div class="timeline-item"><div class="timeline-time">09:30</div><div class="timeline-text">길리 도착 → <strong>Villa Almarik</strong></div><div class="timeline-note">호텔 앞 거북이 스노클링 🐢</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">동네 산책, 자전거 대여, 해변 적응</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Banyan Tree 캐주얼 디너</div></div>
+          </div>
+        </div>
+
+        <div class="day-card island">
+          <div class="day-card-head"><div><span class="day-date">8.8<sup>금</sup></span></div><span class="day-tag confirmed">스노클링</span></div>
+          <div class="day-title">3 길리 글래스보텀 보트 투어</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 앞 거북이 스노클링</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>3 길리 보트 투어</strong> (거북이·수중동상)</div><div class="timeline-note">3세도 글래스보텀으로 OK</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Scallywags</strong> BBQ 시푸드</div></div>
+          </div>
+        </div>
+
+        <div class="day-card island">
+          <div class="day-card-head"><div><span class="day-date">8.9<sup>토</sup></span></div><span class="day-tag confirmed">자전거·일몰</span></div>
+          <div class="day-title">자전거 섬 일주 + 선셋 비치</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">자전거로 북쪽·서쪽 해변 탐험</div></div>
+            <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Karma Kayak (수영하며 식사)</div></div>
+            <div class="timeline-item"><div class="timeline-time">17:30</div><div class="timeline-text">Sunset Point 일몰 + 해먹 그네</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Sendja @ Kardia</strong> 비치 디너</div></div>
+          </div>
+        </div>
+
+        <div class="day-card island">
+          <div class="day-card-head"><div><span class="day-date">8.10<sup>일</sup></span></div><span class="day-tag confirmed">자유</span></div>
+          <div class="day-title">여유로운 섬 라이프</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 앞 거북이 스노클링 또 (매일!)</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">Cidomo 말마차 / 비치 휴식</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Night Market</strong> 야시장 🌟</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 우붓 -->
+    <div class="region-group ubud">
+      <div class="region-group-head">
+        <span class="region-group-icon">🌿</span>
+        <div class="region-group-info">
+          <div class="region-group-name">우붓</div>
+          <div class="region-group-sub">8.11 → 8.14 · 3박 · Westin Ubud</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card travel">
+          <div class="day-card-head"><div><span class="day-date">8.11<sup>월</sup></span></div><span class="day-tag confirmed">이동</span></div>
+          <div class="day-title">길리 → 빠당바이 → 짠디다사 → 우붓</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">09:00</div><div class="timeline-text">길리 → 방살 경유 → 빠당바이</div></div>
+            <div class="timeline-item"><div class="timeline-time">12:00</div><div class="timeline-text">짠디다사 점심 (마운트 아궁 배경)</div></div>
+            <div class="timeline-item"><div class="timeline-time">15:00</div><div class="timeline-text"><strong>Westin Ubud</strong> 체크인</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">우붓 라이브 음악 식당 또는 룸서비스</div></div>
+          </div>
+        </div>
+
+        <div class="day-card ubud">
+          <div class="day-card-head"><div><span class="day-date">8.12<sup>화</sup></span></div><span class="day-tag confirmed">동물원</span></div>
+          <div class="day-title">Bali Zoo + 라이스테라스</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">07:00</div><div class="timeline-text">Tegallalang 라이스테라스 (이른 아침)</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>Bali Zoo</strong> (코끼리 라이딩) ⭐</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Naughty Nuri's</strong> 폭립 BBQ</div></div>
+          </div>
+        </div>
+
+        <div class="day-card ubud">
+          <div class="day-card-head"><div><span class="day-date">8.13<sup>수</sup></span></div><span class="day-tag confirmed">체험·휴식</span></div>
+          <div class="day-title">쿠킹클래스 또는 풀 데이</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">Paon Bali 쿠킹클래스 또는 폭포</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>Folk Pool & Gardens</strong> 풀 + 점심</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Saraswati 케착댄스 + 디너</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 사누르 -->
+    <div class="region-group sanur">
+      <div class="region-group-head">
+        <span class="region-group-icon">🌅</span>
+        <div class="region-group-info">
+          <div class="region-group-name">사누르</div>
+          <div class="region-group-sub">8.14 → 8.17 · 3박 · The 1O1 Oasis</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card sanur">
+          <div class="day-card-head"><div><span class="day-date">8.14<sup>목</sup></span></div><span class="day-tag confirmed">이동·휴양</span></div>
+          <div class="day-title">우붓 → 사누르 (차로 1h)</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">웨스틴 체크아웃, 사누르 이동</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>The 1O1 Sanur</strong> 체크인, 잔잔한 해변</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Soul on the Beach</strong> 모래밭 디너</div></div>
+          </div>
+        </div>
+
+        <div class="day-card sanur">
+          <div class="day-card-head"><div><span class="day-date">8.15<sup>금</sup></span></div><span class="day-tag confirmed">쿠타 서핑</span></div>
+          <div class="day-title">쿠타 서핑 당일치기 (7세 형아)</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">쿠타 이동, 서핑 레슨 (지난번 강사)</div></div>
+            <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Beachwalk 쇼핑 + 점심</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">사누르 복귀, 호텔 풀</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Massimo</strong> 이탈리안 + 젤라토</div></div>
+          </div>
+        </div>
+
+        <div class="day-card sanur">
+          <div class="day-card-head"><div><span class="day-date">8.16<sup>토</sup></span></div><span class="day-tag confirmed">일출·자전거</span></div>
+          <div class="day-title">사누르 시그니처 + 선택 액티비티</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">05:30</div><div class="timeline-text">일출 (Karang Beach) + Daily Baguette</div></div>
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">8km 비치 프롬나드 자전거</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">Nusa Lembongan 또는 호텔 휴식 (선택)</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Sindhu Night Market</strong> 🌟</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 귀국 -->
+    <div class="region-group transit">
+      <div class="region-group-head">
+        <span class="region-group-icon">✈️</span>
+        <div class="region-group-info">
+          <div class="region-group-name">귀국</div>
+          <div class="region-group-sub">8.17 · 사누르 → 공항 → 호치민 → 인천</div>
+        </div>
+      </div>
+      <div class="region-group-body">
+        <div class="day-card transit">
+          <div class="day-card-head"><div><span class="day-date">8.17<sup>일</sup></span></div><span class="day-tag confirmed">귀국</span></div>
+          <div class="day-title">독립기념일 — 교통 여유 있게</div>
+          <div class="timeline">
+            <div class="timeline-item"><div class="timeline-time">11:00</div><div class="timeline-text">체크아웃, 공항 이동 (30~45분)</div><div class="timeline-note">독립기념일 교통 변수 대비</div></div>
+            <div class="timeline-item"><div class="timeline-time">16:00</div><div class="timeline-text"><strong>VN640</strong> 덴파사르 → 호치민</div></div>
+            <div class="timeline-item"><div class="timeline-time">23:45</div><div class="timeline-text"><strong>VN408</strong> 호치민 → 인천</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PANEL: STAY (개선) -->
+  <main class="panel" id="panel-stay">
+    <h2 class="section-title">숙소 <small>6 STAYS</small></h2>
+
+    <div class="stay-card">
+      <div class="stay-thumb" id="thumb-ibis" style="background-image: url('https://images.trvl-media.com/lodging/17000000/16310000/16301200/16301109/b2ff564b.jpg');"></div>
+      <div class="stay-body">
+        <div class="stay-head">
+          <div>
+            <div class="stay-name">ibis Saigon Airport</div>
+            <div class="stay-dates">8.5 화 → 8.6 수 · 1박</div>
+          </div>
+          <span class="stay-region">호치민</span>
+        </div>
+        <div class="stay-desc">탄손낫 공항 도보 6분, 무료 셔틀 24시간 운영. 4인 패밀리 룸 (퀸+벙크) 보유. 새벽 출발 효율적.</div>
+        <div class="stay-meta">
+          <div class="stay-price-box">
+            <div class="stay-price-label">1박 단가</div>
+            <div class="stay-price-val">129,544원</div>
+          </div>
+          <a class="stay-map-btn" href="https://maps.google.com/?q=ibis+Saigon+Airport" target="_blank" rel="noopener">📍 지도</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stay-card">
+      <div class="stay-thumb" id="thumb-padangbai" style="background-image: url('https://images.trvl-media.com/lodging/7000000/6250000/6248800/6248776/90ce38a7.jpg');"></div>
+      <div class="stay-body">
+        <div class="stay-head">
+          <div>
+            <div class="stay-name">Absolute Scuba Bali Dive Resort</div>
+            <div class="stay-dates">8.6 수 → 8.7 목 · 1박</div>
+          </div>
+          <span class="stay-region">빠당바이</span>
+        </div>
+        <div class="stay-desc">빠당바이 항구 인근 다이브 리조트. 보트 출발 다음날 새벽에 유리. 자체 다이브센터 운영.</div>
+        <div class="stay-meta">
+          <div class="stay-price-box">
+            <div class="stay-price-label">1박 단가</div>
+            <div class="stay-price-val">113,855원</div>
+          </div>
+          <a class="stay-map-btn" href="https://maps.google.com/?q=Absolute+Scuba+Bali+Padang+Bai" target="_blank" rel="noopener">📍 지도</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stay-card">
+      <div class="stay-thumb" id="thumb-almarik" style="background-image: url('https://www.almarik-lombok.com/wp-content/uploads/2024/02/gallery-villa-almarik-final-01.jpg');"></div>
+      <div class="stay-body">
+        <div class="stay-head">
+          <div>
+            <div class="stay-name">Villa Almarik Resort &amp; Spa</div>
+            <div class="stay-dates">8.7 목 → 8.11 월 · 4박</div>
+          </div>
+          <span class="stay-region">길리 트라왕안</span>
+        </div>
+        <div class="stay-desc">호텔 바로 앞 Turtle Beach 직접 접근, 매일 거북이 스노클링. 빌라형 객실 25실, 비치 레스토랑, 자체 다이브센터. 선착장 도보 12분.</div>
+        <div class="stay-meta">
+          <div class="stay-price-box">
+            <div class="stay-price-label">1박 단가</div>
+            <div class="stay-price-val">293,632원</div>
+          </div>
+          <a class="stay-map-btn" href="https://maps.google.com/?q=Villa+Almarik+Gili+Trawangan" target="_blank" rel="noopener">📍 지도</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stay-card">
+      <div class="stay-thumb" id="thumb-westin" style="background-image: url('https://cache.marriott.com/is/image/marriotts7prod/wi-dpswr-lush-greenery-22103:Classic-Hor?wid=1336&fit=constrain');"></div>
+      <div class="stay-body">
+        <div class="stay-head">
+          <div>
+            <div class="stay-name">The Westin Resort &amp; Spa Ubud</div>
+            <div class="stay-dates">8.11 월 → 8.14 목 · 3박 (2+1)</div>
+          </div>
+          <span class="stay-region">우붓</span>
+        </div>
+        <div class="stay-desc">사옌(Sayan) 지역, Ayung 강가 정글뷰 5성 리조트. 거대 풀, 키즈 어메니티 충실. 시내 차로 10~15분.</div>
+        <div class="stay-meta">
+          <div class="stay-price-box">
+            <div class="stay-price-label">1박 단가 (유료 2박)</div>
+            <div class="stay-price-val small">~4,138k IDR</div>
+          </div>
+          <a class="stay-map-btn" href="https://maps.google.com/?q=Westin+Resort+Ubud" target="_blank" rel="noopener">📍 지도</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="stay-card">
+      <div class="stay-thumb" id="thumb-101" style="background-image: url('https://phm-hotels.com/static/uploads/images/media-690d6097-c470-40c6-b658-5bf3863e4c10.png');"></div>
+      <div class="stay-body">
+        <div class="stay-head">
+          <div>
+            <div class="stay-name">The 1O1 Bali Oasis Sanur</div>
+            <div class="stay-dates">8.14 목 → 8.17 일 · 3박</div>
+          </div>
+          <span class="stay-region">사누르</span>
+        </div>
+        <div class="stay-desc">사누르 메인 거리 가까운 4성 리조트. 4인 엑스트라베드, 풀 보유. 8km 비치 프롬나드 도보 접근.</div>
+        <div class="stay-meta">
+          <div class="stay-price-box">
+            <div class="stay-price-label">1박 단가</div>
+            <div class="stay-price-val">252,944원</div>
+          </div>
+          <a class="stay-map-btn" href="https://maps.google.com/?q=The+1O1+Bali+Oasis+Sanur" target="_blank" rel="noopener">📍 지도</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- PANEL: EXPENSE -->
+  <main class="panel" id="panel-expense">
+    <h2 class="section-title">가계부 <small>BUDGET</small></h2>
+
+    <div class="subtabs">
+      <button class="subtab active" data-sub="daily">현장 경비</button>
+      <button class="subtab" data-sub="booked">사전 예약</button>
+      <button class="subtab" data-sub="total">전체 합계</button>
+    </div>
+
+    <!-- SUB: DAILY (앞쪽 배치) -->
+    <div class="subpanel active" id="sub-daily">
+      <div class="daily-total-bar">
+        <div class="daily-total-label">현장 누적</div>
+        <div class="daily-total-num" id="dailyTotal">₩0</div>
+        <div class="daily-total-sub" id="dailyTotalSub">기록 없음</div>
+      </div>
+
+      <div class="cat-summary-grid" id="catSummaryGrid"></div>
+
+      <!-- 일별 버튼 (가로 스크롤) -->
+      <div class="day-selector-wrap">
+        <div class="day-selector-label">📅 일별 보기</div>
+        <div class="day-buttons" id="dayButtons"></div>
+      </div>
+
+      <!-- 선택된 날짜 카드 -->
+      <div class="day-detail-card" id="dayDetailCard">
+        <div class="day-detail-head">
+          <div class="day-detail-title" id="dayDetailTitle">8.7 목요일 <small>0건</small></div>
+          <div class="day-detail-sum" id="dayDetailSum">₩0</div>
+        </div>
+        <div id="dayDetailEntries">
+          <div class="day-detail-empty">이 날의 기록이 없어요.</div>
+        </div>
+      </div>
+
+      <!-- 입력 카드 -->
+      <div class="input-card">
+        <div class="input-card-title">+ 새 기록 추가</div>
+
+        <div class="input-section">
+          <div class="input-label">카테고리</div>
+          <div class="cat-grid" id="catGrid"></div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-label">금액</div>
+          <div class="amount-input-row">
+            <div class="currency-toggle">
+              <button class="currency-btn active" data-cur="IDR">IDR</button>
+              <button class="currency-btn" data-cur="KRW">KRW</button>
+            </div>
+            <input type="number" inputmode="decimal" class="amount-input" id="amountInput" placeholder="0" oninput="updatePreview()" />
+          </div>
+          <div class="live-preview" id="livePreview">금액 입력 시 자동 환산</div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-label">메모 (선택, 최대 40자)</div>
+          <input type="text" class="memo-input" id="memoInput" placeholder="예: Scallywags 저녁" maxlength="40" />
+        </div>
+
+        <button class="add-btn" id="addBtn" onclick="addEntry()">선택한 날짜에 추가</button>
+      </div>
+
+      <div style="text-align:right;">
+        <button onclick="clearAll()" style="background:transparent;border:1px solid var(--sand-300);color:var(--ink-500);border-radius:10px;padding:7px 14px;font-family:inherit;font-size:11px;cursor:pointer;margin-top:10px;">전체 기록 삭제</button>
+      </div>
+    </div>
+
+    <!-- SUB: BOOKED -->
+    <div class="subpanel" id="sub-booked">
+      <div class="daily-total-bar">
+        <div class="daily-total-label">사전 결제 완료</div>
+        <div class="daily-total-num">₩3,950,957</div>
+        <div class="daily-total-sub">항공 + 숙소 5건 (현금성)</div>
+      </div>
+
+      <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:14px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결제 완료</h3>
+      <div class="rec-table">
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">✈️ 4인 왕복 항공권</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">베트남항공 · 2/14 결제</div>
+          </div>
+          <div class="rec-amount">1,774,200<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🏨 Absolute Scuba Bali (1박)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">빠당바이 · 4/22 결제</div>
+          </div>
+          <div class="rec-amount">113,855<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🏝️ Villa Almarik (4박)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">길리 · 5/8 결제</div>
+          </div>
+          <div class="rec-amount">1,174,526<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🌅 The 1O1 Sanur (3박)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">사누르 · 5/8 결제</div>
+          </div>
+          <div class="rec-amount">758,832<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🛏️ ibis Saigon Airport (1박)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">호치민 · 5/22 결제</div>
+          </div>
+          <div class="rec-amount">129,544<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+      </div>
+
+      <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결제 예정</h3>
+      <div class="rec-table">
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🏨 Westin Ubud (2박, 현지결제)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">≈ ₩737,000 (환율 기준)</div>
+          </div>
+          <div class="rec-amount" style="color:var(--warning);">8,276,400<small style="font-size:9px;color:var(--ink-500);"> IDR</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🛥️ Bluewater Express 왕복</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">Klook 예약 대기</div>
+          </div>
+          <div class="rec-amount pending">~90~120만</div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🛂 발리 비자·관광세</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">e-VOA + Love Bali · 4인</div>
+          </div>
+          <div class="rec-amount pending">~26만원</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB: TOTAL -->
+    <div class="subpanel" id="sub-total">
+      <div class="daily-total-bar">
+        <div class="daily-total-label">여행 총비용 (예상)</div>
+        <div class="daily-total-num" id="grandTotal">₩3,950,957</div>
+        <div class="daily-total-sub">사전 + 예정 + 현장</div>
+      </div>
+
+      <div class="rec-table">
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">✅ 사전 결제 완료</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">항공 + 숙소 5건</div>
+          </div>
+          <div class="rec-amount">3,950,957<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🏨 Westin 우붓 (현지결제)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">8,276,400 IDR 환산</div>
+          </div>
+          <div class="rec-amount" id="westinKrw">~737,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">📦 기타 예정</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">보트 · 비자·관광세</div>
+          </div>
+          <div class="rec-amount">~1,160,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">📅 현장 경비 누적</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;" id="totalDailyMeta">기록 없음</div>
+          </div>
+          <div class="rec-amount" id="totalDailyAmount">0<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-box-title">참고</div>
+        <div class="info-box-text">총비용은 현재 환율(<span id="totalRateInfo">1 IDR = 0.089원</span>) 기준 추정치입니다.</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PANEL: EXPLORE -->
+  <main class="panel" id="panel-explore">
+    <h2 class="section-title">탐색 <small>EAT · DO</small></h2>
+
+    <div class="region-tabs" id="regionTabs"></div>
+    <div class="type-filter">
+      <button class="type-btn active" data-type="all">전체</button>
+      <button class="type-btn" data-type="eat">맛집</button>
+      <button class="type-btn" data-type="do">할거리</button>
+      <button class="type-btn" data-type="fav">⭐ 즐겨찾기</button>
+    </div>
+
+    <div id="placesContainer"></div>
+  </main>
+
+  <!-- PANEL: RECORD -->
+  <main class="panel" id="panel-record">
+    <h2 class="section-title">예약 내역 <small>BOOKING DETAILS</small></h2>
+
+    <div class="info-box">
+      <div class="info-box-title">💡 안내</div>
+      <div class="info-box-text">결제일·결제수단·플랫폼·취소기한 등 행정 정보를 모아둔 곳. 무료취소 기한 임박할 때 확인하세요.</div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">✈️ 4인 왕복 항공권</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">2/14</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">1,774,200원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">하나 JADE 카드</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">베트남항공 공홈</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🏨 Absolute Scuba Bali (1박)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">4/22</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">113,855원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">더심플하나카드</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">직접 예약</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/31 23:59</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🏝️ Villa Almarik (4박)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/8</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">1,174,526원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">페이코 복지P</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">트립비토즈</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/24 19:00</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🏨 Westin Ubud (2박)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제</span><span class="rec-meta-val">현지결제 예정</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">8,276,400 IDR</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">본보이카드</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">Marriott</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/28 23:59</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🏨 Westin Ubud (1박, 포인트)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제</span><span class="rec-meta-val">숙박권+11k pt</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">멤버십</span><span class="rec-meta-val">메리어트 본보이</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">8/6 23:59</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">요청</span><span class="rec-meta-val">동일 객실 연박</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🌅 The 1O1 Bali Oasis Sanur (3박)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/8</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">758,832원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">페이코 복지P</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">Agoda</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/24</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🛏️ ibis Saigon Airport (1박)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/22</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">129,544원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">페이코 복지P</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">룸타입</span><span class="rec-meta-val">Family / 조식X</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/30</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결정·예약 대기</h3>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🛥️ Bluewater Express 왕복</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">8/7 08:00 빠당바이→길리 + 8/11 09~10시 길리→빠당바이 · Klook 한글 예약 추천</div>
+        </div>
+        <span class="rec-status pending">대기</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🚗 픽업 차량 3건</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">8/6 공항→빠당바이 · 8/14 우붓→사누르 · 8/17 사누르→공항</div>
+        </div>
+        <span class="rec-status pending">대기</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- PANEL: FX -->
+  <main class="panel" id="panel-fx">
+    <h2 class="section-title">환율 계산기 <small>IDR ↔ KRW</small></h2>
+
+    <div class="fx-rate-bar">
+      <div class="fx-rate-label">CURRENT RATE</div>
+      <div class="fx-rate-value">1,000 IDR = <span id="rateDisplay">89</span> 원</div>
+      <div class="fx-rate-edit">
+        <span>1 IDR =</span>
+        <input type="number" id="rateInput" class="fx-rate-input" value="0.089" step="0.001" />
+        <span>원</span>
+        <button class="fx-update-btn" onclick="updateRate()">적용</button>
+      </div>
+      <div style="font-size:10px;color:var(--ocean-300);margin-top:8px;opacity:0.8;">네이버·구글에서 매일 확인 후 입력</div>
+    </div>
+
+    <div class="fx-calculator">
+      <div class="fx-row">
+        <div class="fx-flag idr">🇮🇩</div>
+        <div class="fx-input-wrap">
+          <div class="fx-currency-label">인도네시아 루피아 (IDR)</div>
+          <input type="number" inputmode="decimal" class="fx-input" id="idrInput" placeholder="0" oninput="convertFromIDR()" />
+        </div>
+      </div>
+      <div class="fx-row">
+        <div class="fx-flag krw">₩</div>
+        <div class="fx-input-wrap">
+          <div class="fx-currency-label">대한민국 원 (KRW)</div>
+          <input type="number" inputmode="decimal" class="fx-input" id="krwInput" placeholder="0" oninput="convertFromKRW()" />
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;color:var(--ink-500);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:10px;padding:0 4px;">자주 쓰는 금액</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;" id="quickGrid"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">💡 발리 환전·결제 팁</div>
+      <div class="info-box-text">
+        ① 큰 금액은 카드 (호텔, 큰 식당)<br>
+        ② 현금은 시내 환전소 (공항보다 5~10% 유리)<br>
+        ③ "PT.중앙" 환전소 신뢰도 높음<br>
+        ④ ATM은 BCA·Mandiri 메이저만<br>
+        ⑤ 와룽·노점은 현금만
+      </div>
+    </div>
+  </main>
+
+  <!-- PANEL: CHECKLIST -->
+  <main class="panel" id="panel-checklist">
+    <div class="checklist-section">
+      <div class="checklist-title">📋 출국 30일 전</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Bluewater Express 왕복 예약</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">픽업 차량 3건 예약</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">쿠타 서핑 강사에게 메시지</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">🛂 출국 1주 전</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">e-VOA 신청 (4인분)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">발리 관광세 사전결제 (Love Bali)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">여행자보험 가입</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">웨스틴 객실 연박 메일</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">📱 출국 3일 전</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">All Indonesia 앱 + 입국 신고서</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">SIM/eSIM 또는 로밍</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">Grab + Halodoc 앱 설치</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">소액 환전 (USD·IDR)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">예약 확인서 PDF</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">현재 환율 → 환율 탭 업데이트</div></div>
+    </div>
+
+    <div class="checklist-section">
+      <div class="checklist-title">💼 짐 핵심</div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">멀미약 (3세용 키미테)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">아동 자외선차단제, 모기기피제</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">아동 구명조끼 또는 현지대여</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">상비약 (해열·지사·연고)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">래쉬가드·수영복·비치샌들</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">멀티탭 + 어댑터 (C타입)</div></div>
+    </div>
+  </main>
+
+  <div class="footer-note">
+    <em>Selamat jalan</em>
+    안전하고 즐거운 여행 되세요 · v0.6 · 2026.05
+  </div>
+
+</div>
+
+<script>
+  // === STATE ===
+  let exchangeRate = 0.089;
+  let entries = [];
+  let favorites = new Set();
+  let selectedCat = null;
+  let selectedCur = 'IDR';
+  let selectedDay = '2026-08-07'; // 기본 선택 첫 발리 도착일
+  let activeRegion = 'gili';
+  let activeType = 'all';
+
+  // === DATA: 여행 일자 (8/5 ~ 8/17) ===
+  const tripDays = [
+    { date: '2026-08-05', label: '8.5', wk: '화', region: '호치민' },
+    { date: '2026-08-06', label: '8.6', wk: '수', region: '빠당바이' },
+    { date: '2026-08-07', label: '8.7', wk: '목', region: '길리' },
+    { date: '2026-08-08', label: '8.8', wk: '금', region: '길리' },
+    { date: '2026-08-09', label: '8.9', wk: '토', region: '길리' },
+    { date: '2026-08-10', label: '8.10', wk: '일', region: '길리' },
+    { date: '2026-08-11', label: '8.11', wk: '월', region: '우붓' },
+    { date: '2026-08-12', label: '8.12', wk: '화', region: '우붓' },
+    { date: '2026-08-13', label: '8.13', wk: '수', region: '우붓' },
+    { date: '2026-08-14', label: '8.14', wk: '목', region: '사누르' },
+    { date: '2026-08-15', label: '8.15', wk: '금', region: '사누르' },
+    { date: '2026-08-16', label: '8.16', wk: '토', region: '사누르' },
+    { date: '2026-08-17', label: '8.17', wk: '일', region: '귀국' }
+  ];
+
+  const categories = [
+    { id: 'food', icon: '🍽️', label: '식비' },
+    { id: 'transit', icon: '🚗', label: '교통' },
+    { id: 'activity', icon: '🎢', label: '액티비티' },
+    { id: 'shopping', icon: '🛍️', label: '쇼핑' },
+    { id: 'spa', icon: '💆', label: '마사지' },
+    { id: 'tip', icon: '💵', label: '팁' },
+    { id: 'mart', icon: '🛒', label: '편의·약' },
+    { id: 'etc', icon: '📦', label: '기타' }
+  ];
+
+  // === DATA: 탐색 (지역별 추천) ===
+  const regions = [
+    { id: 'hochiminh', label: '호치민' },
+    { id: 'padangbai', label: '빠당바이' },
+    { id: 'gili', label: '길리' },
+    { id: 'ubud', label: '우붓' },
+    { id: 'sanur', label: '사누르' }
+  ];
+
+  const places = [
+    // === 길리 ===
+    { id: 'gi-1', region: 'gili', type: 'eat', name: 'Scallywags Seafood Bar & Grill', icon: '🍽️',
+      tags: ['디너','가족','BBQ','시그니처'], desc: '모래밭 테이블 + BBQ 시푸드. 키즈 메뉴 충실, 4박 중 한 번 필수.',
+      price: 'IDR 150~300k', dist: '중심가', kid: '⭐⭐⭐⭐⭐', map: 'Scallywags+Gili+Trawangan' },
+    { id: 'gi-2', region: 'gili', type: 'eat', name: 'Sendja @ Kardia', icon: '🌅',
+      tags: ['디너','일몰','시그니처'], desc: '비치프런트 일몰 명소. 마운트 아궁 배경, 라이브 음악·파이어쇼.',
+      price: 'IDR 120~250k', dist: '북서쪽', kid: '⭐⭐⭐⭐', map: 'Sendja+Kardia+Gili+Trawangan' },
+    { id: 'gi-3', region: 'gili', type: 'eat', name: 'Banyan Tree Beach', icon: '🌴',
+      tags: ['브런치','비치','가족'], desc: '모래밭에 발 묻고 식사. 평화롭고 아이가 모래 놀기 좋음.',
+      price: 'IDR 80~180k', dist: '동쪽', kid: '⭐⭐⭐⭐⭐', map: 'Banyan+Tree+Gili+Trawangan' },
+    { id: 'gi-4', region: 'gili', type: 'eat', name: 'Francesco\'s Pizza', icon: '🍕',
+      tags: ['디너','피자','가족'], desc: '화덕 피자. 아이들 환장 메뉴, 테이크아웃 가능.',
+      price: 'IDR 80~150k', dist: '중심가', kid: '⭐⭐⭐⭐⭐', map: 'Francesco+Pizza+Gili+Trawangan' },
+    { id: 'gi-5', region: 'gili', type: 'eat', name: 'Night Market', icon: '🌃',
+      tags: ['저녁','야시장','시그니처'], desc: '진짜 길리 분위기. 사테·시푸드·나시고렝. 가성비 좋음.',
+      price: 'IDR 30~100k', dist: '중심가', kid: '⭐⭐⭐⭐', map: 'Gili+Trawangan+Night+Market' },
+    { id: 'gi-6', region: 'gili', type: 'do', name: '호텔 앞 거북이 스노클링', icon: '🐢',
+      tags: ['필수','매일','무료'], desc: 'Villa Almarik 앞 Turtle Beach에서 매일 거북이 보기. 마스크·핀 호텔 대여.',
+      price: '무료 (장비 5만원)', dist: '호텔 앞', kid: '⭐⭐⭐⭐⭐', map: 'Turtle+Beach+Gili+Trawangan' },
+    { id: 'gi-7', region: 'gili', type: 'do', name: '3 길리 글래스보텀 보트', icon: '⛵',
+      tags: ['추천','반일','가족'], desc: '3개 섬 + 거북이 + 수중 동상. 3세 동생도 OK.',
+      price: '4인 60~80만원', dist: '항구 출발', kid: '⭐⭐⭐⭐⭐', map: 'Gili+Trawangan+Harbor' },
+    { id: 'gi-8', region: 'gili', type: 'do', name: '자전거 섬 일주', icon: '🚴',
+      tags: ['필수','반일','가족'], desc: '7km 섬 둘레. 키즈 시트·자전거 대여 가능.',
+      price: '대여 1일 7만원', dist: '섬 전체', kid: '⭐⭐⭐⭐⭐', map: 'Gili+Trawangan' },
+    { id: 'gi-9', region: 'gili', type: 'do', name: 'Sunset Point (서쪽)', icon: '🌅',
+      tags: ['필수','일몰','무료'], desc: '발리·아궁산 배경 일몰 명소. 해먹 그네 인스타 명소.',
+      price: '무료', dist: '서쪽 끝', kid: '⭐⭐⭐⭐⭐', map: 'Sunset+Point+Gili+Trawangan' },
+    { id: 'gi-10', region: 'gili', type: 'do', name: 'Cidomo 말마차', icon: '🐎',
+      tags: ['경험','짧음'], desc: '길리만의 시그니처 마차. 짐 이동도 활용.',
+      price: 'IDR 150~200k', dist: '메인 스트립', kid: '⭐⭐⭐', map: 'Gili+Trawangan' },
+
+    // === 우붓 ===
+    { id: 'ub-1', region: 'ubud', type: 'eat', name: 'Folk Pool & Gardens', icon: '🏊',
+      tags: ['점심','풀','가족','시그니처'], desc: '25m 풀 + 점심. 화·일 19시 무료 영화 상영.',
+      price: 'IDR 100~200k', dist: 'Monkey Forest Rd', kid: '⭐⭐⭐⭐⭐', map: 'Folk+Pool+Gardens+Ubud' },
+    { id: 'ub-2', region: 'ubud', type: 'eat', name: 'Bali Family Hangout', icon: '🎨',
+      tags: ['종일','풀','키즈클럽'], desc: '키즈클럽(2~7세) + 트램펄린 + 영화. 키즈 트레이 메뉴.',
+      price: 'IDR 70~150k', dist: '시내', kid: '⭐⭐⭐⭐⭐', map: 'Bali+Family+Hangout+Ubud' },
+    { id: 'ub-3', region: 'ubud', type: 'eat', name: 'Milk & Madu Ubud', icon: '🥞',
+      tags: ['브런치','시그니처','가족'], desc: '우붓 No.1 브런치. 올데이 브렉퍼스트, 라바스톤 피자.',
+      price: 'IDR 80~180k', dist: '시내', kid: '⭐⭐⭐⭐⭐', map: 'Milk+Madu+Ubud' },
+    { id: 'ub-4', region: 'ubud', type: 'eat', name: 'Naughty Nuri\'s', icon: '🍖',
+      tags: ['디너','BBQ','시그니처'], desc: '명물 폭립 BBQ. 우붓 클래식, 캐주얼 분위기.',
+      price: 'IDR 120~200k', dist: 'Raya Sanggingan', kid: '⭐⭐⭐⭐', map: 'Naughty+Nuris+Ubud' },
+    { id: 'ub-5', region: 'ubud', type: 'eat', name: 'Pizza Bagus', icon: '🍕',
+      tags: ['점심','가족','놀이터'], desc: '넓은 정원 + 놀이터. 키즈 트레이 메뉴 (파스타+감자+과일).',
+      price: 'IDR 80~150k', dist: '시내', kid: '⭐⭐⭐⭐⭐', map: 'Pizza+Bagus+Ubud' },
+    { id: 'ub-6', region: 'ubud', type: 'do', name: 'Bali Zoo', icon: '🐘',
+      tags: ['추천','종일','시그니처'], desc: '코끼리·조랑말 라이딩, 토들러 풀, 동물 쇼.',
+      price: '4인 80~120만원', dist: '차 30분', kid: '⭐⭐⭐⭐⭐', map: 'Bali+Zoo+Ubud' },
+    { id: 'ub-7', region: 'ubud', type: 'do', name: 'Tegallalang 라이스테라스', icon: '🌾',
+      tags: ['시그니처','오전','사진'], desc: '발리 인스타 명소. 카페에서 풍경 감상 추천.',
+      price: '입장 25k IDR', dist: '차 20분', kid: '⭐⭐⭐⭐', map: 'Tegallalang+Rice+Terrace' },
+    { id: 'ub-8', region: 'ubud', type: 'do', name: 'Tegenungan 폭포', icon: '💧',
+      tags: ['추천','반일'], desc: '우붓 가장 가까운 폭포. 카페·뷰 데크 있어서 안 내려가도 OK.',
+      price: '입장 15~25k IDR', dist: '차 30분', kid: '⭐⭐⭐⭐', map: 'Tegenungan+Waterfall' },
+    { id: 'ub-9', region: 'ubud', type: 'do', name: 'Paon Bali 쿠킹클래스', icon: '🍳',
+      tags: ['체험','반일','가족'], desc: '시장 투어 + 발리 가정식 요리 + 점심. 4세+ 가능.',
+      price: '4인 80~100만원', dist: '시내 외곽', kid: '⭐⭐⭐⭐⭐', map: 'Paon+Bali+Ubud' },
+    { id: 'ub-10', region: 'ubud', type: 'do', name: 'Saraswati 케착댄스', icon: '🎭',
+      tags: ['저녁','문화','시그니처'], desc: '발리 전통 무용 + 가믈란 라이브. 마지막 우붓 저녁 추천.',
+      price: '4인 약 15만원', dist: '시내', kid: '⭐⭐⭐', map: 'Saraswati+Temple+Ubud' },
+
+    // === 사누르 ===
+    { id: 'sa-1', region: 'sanur', type: 'eat', name: 'Byrd House', icon: '🏊',
+      tags: ['점심','풀','가족','시그니처'], desc: '비치프런트 + 키즈 풀 + 트리하우스 + 젤라토.',
+      price: 'IDR 100~200k', dist: 'Segara Village', kid: '⭐⭐⭐⭐⭐', map: 'Byrd+House+Sanur' },
+    { id: 'sa-2', region: 'sanur', type: 'eat', name: 'Soul on the Beach', icon: '🏖️',
+      tags: ['브런치','비치','가족'], desc: '진짜 모래밭 테이블. 일요일 페이스 페인팅.',
+      price: 'IDR 80~150k', dist: 'Sindhu Beach', kid: '⭐⭐⭐⭐⭐', map: 'Soul+on+the+Beach+Sanur' },
+    { id: 'sa-3', region: 'sanur', type: 'eat', name: 'Daily Baguette', icon: '🥐',
+      tags: ['아침','일출 후'], desc: '새벽 6:30 오픈. 일출 보고 바로 와서 아침.',
+      price: 'IDR 40~80k', dist: '비치 근처', kid: '⭐⭐⭐⭐', map: 'Daily+Baguette+Sanur' },
+    { id: 'sa-4', region: 'sanur', type: 'eat', name: 'Massimo Restaurant', icon: '🍝',
+      tags: ['디너','이탈리안','젤라토','시그니처'], desc: '20년 사누르 클래식. 정통 이탈리안 + 명물 젤라토.',
+      price: 'IDR 100~250k', dist: 'Danau Tamblingan', kid: '⭐⭐⭐⭐⭐', map: 'Massimo+Sanur' },
+    { id: 'sa-5', region: 'sanur', type: 'eat', name: 'Sindhu Night Market', icon: '🌃',
+      tags: ['저녁','야시장','시그니처'], desc: '사누르 야시장. 사테·그릴 시푸드·나시고렝.',
+      price: 'IDR 30~80k', dist: 'Sindhu Beach', kid: '⭐⭐⭐⭐', map: 'Sindhu+Night+Market+Sanur' },
+    { id: 'sa-6', region: 'sanur', type: 'do', name: '일출 (Karang Beach)', icon: '🌅',
+      tags: ['필수','새벽','무료','시그니처'], desc: '동향 해변, 5:30~6:00 베스트. 사누르 평생 기억.',
+      price: '무료', dist: '비치 도보', kid: '⭐⭐⭐⭐⭐', map: 'Karang+Beach+Sanur' },
+    { id: 'sa-7', region: 'sanur', type: 'do', name: '8km 비치 프롬나드 자전거', icon: '🚴',
+      tags: ['필수','반일','가족'], desc: '차 없는 평지 8km. 키즈 시트·트라이씨클 대여 가능.',
+      price: 'IDR 30~50k/h', dist: '비치 따라', kid: '⭐⭐⭐⭐⭐', map: 'Sanur+Beach+Promenade' },
+    { id: 'sa-8', region: 'sanur', type: 'do', name: 'Nusa Lembongan 당일치기', icon: '⛵',
+      tags: ['추천','종일'], desc: '사누르발 30~40분 보트. 페니다보다 가족 친화적.',
+      price: '4인 60~80만원', dist: '항구 출발', kid: '⭐⭐⭐⭐', map: 'Nusa+Lembongan' },
+    { id: 'sa-9', region: 'sanur', type: 'do', name: 'Bali Safari & Marine Park', icon: '🦁',
+      tags: ['추천','종일','우붓 대안'], desc: '사파리 트램 + 마린파크 + 워터파크 + 돌고래 쇼.',
+      price: '4인 150~180만원', dist: '차 45분', kid: '⭐⭐⭐⭐⭐', map: 'Bali+Safari+Marine+Park' },
+    { id: 'sa-10', region: 'sanur', type: 'do', name: '비치 마사지', icon: '💆',
+      tags: ['휴식','저렴'], desc: '비치 프롬나드 따라 IDR 100k/시간. 현금만.',
+      price: 'IDR 100k/h', dist: '비치 따라', kid: '⭐⭐⭐', map: 'Sanur+Beach' },
+
+    // === 호치민 ===
+    { id: 'ho-1', region: 'hochiminh', type: 'eat', name: '벤탄 마켓 & 야시장', icon: '🍜',
+      tags: ['저녁','시그니처','가성비'], desc: '쌀국수·반미·분짜 한 자리에. 낮엔 기념품, 밤엔 길거리 음식. 흥정 필수.',
+      price: 'VND 50~150k', dist: '1군', kid: '⭐⭐⭐', map: 'Ben+Thanh+Market+Ho+Chi+Minh' },
+    { id: 'ho-2', region: 'hochiminh', type: 'eat', name: '반미·포 (현지 노점/식당)', icon: '🥖',
+      tags: ['간식','가성비','로컬'], desc: '베트남 대표 음식. 안 매워서 아이도 OK. "không cay"(안 맵게) 요청.',
+      price: 'VND 30~100k', dist: '1군 곳곳', kid: '⭐⭐⭐⭐', map: 'Banh+Mi+Ho+Chi+Minh+District+1' },
+    { id: 'ho-3', region: 'hochiminh', type: 'do', name: '통일궁 (Independence Palace)', icon: '🏛️',
+      tags: ['관광','시그니처'], desc: '베트남 전쟁 종전의 상징. 저녁엔 외관·야간 조명. (내부 17시 폐관)',
+      price: '입장 65k VND', dist: '1군', kid: '⭐⭐⭐', map: 'Independence+Palace+Ho+Chi+Minh' },
+    { id: 'ho-4', region: 'hochiminh', type: 'do', name: '노트르담 성당 + 중앙우체국', icon: '⛪',
+      tags: ['관광','짧음','사진'], desc: '프랑스 식민지 시대 건축물 두 곳이 나란히. 우체국 내부 옛 지도 볼만함.',
+      price: '무료', dist: '통일궁 도보 5분', kid: '⭐⭐⭐', map: 'Notre+Dame+Cathedral+Saigon' },
+    { id: 'ho-5', region: 'hochiminh', type: 'do', name: 'Bitexco Sky Deck', icon: '🌃',
+      tags: ['야경','시그니처'], desc: '49층 360도 사이공 야경. 7세 형아 좋아함, 3세는 약간 무서워할 수도.',
+      price: '약 200k VND/성인', dist: '1군', kid: '⭐⭐⭐⭐', map: 'Bitexco+Financial+Tower+Saigon+Skydeck' },
+
+    // === 빠당바이 ===
+    { id: 'pb-1', region: 'padangbai', type: 'eat', name: 'Topi Inn Restaurant', icon: '🐟',
+      tags: ['저녁','로컬'], desc: '항구 근처 시푸드. 빠당바이 도착 첫날 무난.',
+      price: 'IDR 50~120k', dist: '항구 인근', kid: '⭐⭐⭐', map: 'Topi+Inn+Padang+Bai' },
+    { id: 'pb-2', region: 'padangbai', type: 'do', name: 'Blue Lagoon 스노클링', icon: '🐠',
+      tags: ['오전','짧음'], desc: '항구 옆 작은 만, 산호·물고기 많음. 시간 되면.',
+      price: '장비 대여 별도', dist: '항구 도보', kid: '⭐⭐⭐⭐', map: 'Blue+Lagoon+Padang+Bai' }
+  ];
+
+  // === TAB SWITCH ===
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  document.querySelectorAll('.subtab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.subtab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.subpanel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('sub-' + tab.dataset.sub).classList.add('active');
+      if (tab.dataset.sub === 'total') updateGrandTotal();
+    });
+  });
+
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  // === FX ===
+  function formatNum(n) { return new Intl.NumberFormat('ko-KR', { maximumFractionDigits: 0 }).format(n); }
+  function convertFromIDR() {
+    const idr = parseFloat(document.getElementById('idrInput').value) || 0;
+    document.getElementById('krwInput').value = idr === 0 ? '' : Math.round(idr * exchangeRate);
+  }
+  function convertFromKRW() {
+    const krw = parseFloat(document.getElementById('krwInput').value) || 0;
+    document.getElementById('idrInput').value = krw === 0 ? '' : Math.round(krw / exchangeRate);
+  }
+  function updateRate() {
+    const newRate = parseFloat(document.getElementById('rateInput').value);
+    if (newRate && newRate > 0) {
+      exchangeRate = newRate;
+      document.getElementById('rateDisplay').textContent = (newRate * 1000).toFixed(1).replace(/\.0$/, '');
+      renderQuickGrid();
+      if (document.getElementById('idrInput').value) convertFromIDR();
+      saveData();
+      renderDaily();
+      updateGrandTotal();
+      document.getElementById('totalRateInfo').textContent = `1 IDR = ${newRate}원`;
+      const westinKrw = Math.round(8276400 * exchangeRate);
+      document.getElementById('westinKrw').innerHTML = `${formatNum(westinKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+      updatePreview();
+    }
+  }
+  function renderQuickGrid() {
+    const quickAmounts = [10000, 50000, 100000, 200000, 500000, 1000000, 2000000, 5000000];
+    const grid = document.getElementById('quickGrid');
+    grid.innerHTML = quickAmounts.map(idr => {
+      const krw = Math.round(idr * exchangeRate);
+      return `<div style="background:white;border:1px solid var(--sand-200);border-radius:12px;padding:12px 14px;cursor:pointer;" onclick="setIDR(${idr})">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-900);font-weight:600;">${formatNum(idr)} IDR</div>
+        <div style="font-size:9px;color:var(--ink-300);margin:2px 0;">↓</div>
+        <div style="font-family:'Pretendard',sans-serif;font-size:16px;font-weight:500;color:var(--coral);">₩${formatNum(krw)}</div>
+      </div>`;
+    }).join('');
+  }
+  function setIDR(idr) {
+    document.getElementById('idrInput').value = idr;
+    convertFromIDR();
+    document.querySelector('.fx-calculator').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // === CATEGORY GRID ===
+  function renderCatGrid() {
+    document.getElementById('catGrid').innerHTML = categories.map(c => `
+      <button class="cat-btn" data-cat="${c.id}" onclick="selectCat('${c.id}')">
+        <span class="cat-btn-icon">${c.icon}</span>
+        <span class="cat-btn-label">${c.label}</span>
+      </button>
+    `).join('');
+  }
+  function selectCat(catId) {
+    selectedCat = catId;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('selected', b.dataset.cat === catId));
+    updateAddBtn();
+  }
+
+  // === CURRENCY TOGGLE ===
+  document.querySelectorAll('.currency-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedCur = btn.dataset.cur;
+      updatePreview();
+    });
+  });
+
+  function updatePreview() {
+    const amt = parseFloat(document.getElementById('amountInput').value) || 0;
+    const preview = document.getElementById('livePreview');
+    if (amt === 0) {
+      preview.innerHTML = '금액 입력 시 자동 환산';
+    } else if (selectedCur === 'IDR') {
+      const krw = Math.round(amt * exchangeRate);
+      preview.innerHTML = `${formatNum(amt)} IDR ≈ <strong>₩${formatNum(krw)}</strong>`;
+    } else {
+      preview.innerHTML = `<strong>₩${formatNum(amt)}</strong> 입력됨`;
+    }
+    updateAddBtn();
+  }
+
+  function updateAddBtn() {
+    const amt = parseFloat(document.getElementById('amountInput').value) || 0;
+    document.getElementById('addBtn').disabled = !selectedCat || amt <= 0;
+  }
+
+  // === ENTRY OPS ===
+  function addEntry() {
+    const amt = parseFloat(document.getElementById('amountInput').value) || 0;
+    if (!selectedCat || amt <= 0) return;
+    const memo = document.getElementById('memoInput').value.trim();
+    entries.push({
+      id: Date.now() + Math.random(),
+      date: selectedDay,
+      cat: selectedCat,
+      amount: amt,
+      currency: selectedCur,
+      memo
+    });
+    saveData();
+    renderDaily();
+    document.getElementById('amountInput').value = '';
+    document.getElementById('memoInput').value = '';
+    selectedCat = null;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+    updatePreview();
+  }
+  function deleteEntry(id) {
+    if (!confirm('이 기록을 삭제할까요?')) return;
+    entries = entries.filter(e => e.id !== id);
+    saveData();
+    renderDaily();
+  }
+  function clearAll() {
+    if (!confirm('전체 현장 경비 기록을 모두 삭제할까요?\n(되돌릴 수 없어요)')) return;
+    entries = [];
+    saveData();
+    renderDaily();
+  }
+
+  // === SAVE/LOAD ===
+  function saveData() {
+    try {
+      localStorage.setItem('bali_entries_v4', JSON.stringify(entries));
+      localStorage.setItem('bali_rate_v4', String(exchangeRate));
+      localStorage.setItem('bali_favs_v4', JSON.stringify([...favorites]));
+    } catch (e) {}
+  }
+  function loadData() {
+    try {
+      const saved = localStorage.getItem('bali_entries_v4');
+      if (saved) entries = JSON.parse(saved);
+      const savedRate = localStorage.getItem('bali_rate_v4');
+      if (savedRate) {
+        exchangeRate = parseFloat(savedRate);
+        document.getElementById('rateInput').value = exchangeRate;
+        document.getElementById('rateDisplay').textContent = (exchangeRate * 1000).toFixed(1).replace(/\.0$/, '');
+      }
+      const savedFavs = localStorage.getItem('bali_favs_v4');
+      if (savedFavs) favorites = new Set(JSON.parse(savedFavs));
+    } catch (e) {}
+  }
+
+  // === EXPENSE RENDER ===
+  function getEntryKRW(e) {
+    return e.currency === 'KRW' ? e.amount : Math.round(e.amount * exchangeRate);
+  }
+
+  function renderDailyButtons() {
+    const sumByDate = {};
+    entries.forEach(e => {
+      sumByDate[e.date] = (sumByDate[e.date] || 0) + getEntryKRW(e);
+    });
+    const wrap = document.getElementById('dayButtons');
+    wrap.innerHTML = tripDays.map(d => {
+      const sum = sumByDate[d.date] || 0;
+      const isActive = d.date === selectedDay;
+      const hasData = sum > 0;
+      return `
+        <button class="day-btn ${isActive ? 'active' : ''} ${hasData ? 'has-data' : ''}" onclick="selectDay('${d.date}')">
+          <span class="day-btn-num">${d.label}</span>
+          <span class="day-btn-wk">${d.wk}</span>
+          <span class="day-btn-sum">${sum > 0 ? '₩' + formatNum(sum) : ''}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function selectDay(date) {
+    selectedDay = date;
+    renderDailyButtons();
+    renderDayDetail();
+    // 스크롤 위치 유지를 위해 가운데로
+    const btn = document.querySelector(`.day-btn.active`);
+    if (btn && btn.scrollIntoView) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }
+
+  function renderDayDetail() {
+    const d = tripDays.find(x => x.date === selectedDay);
+    const items = entries.filter(e => e.date === selectedDay);
+    const sum = items.reduce((s, e) => s + getEntryKRW(e), 0);
+    const titleEl = document.getElementById('dayDetailTitle');
+    if (d) {
+      titleEl.innerHTML = `${d.label} ${d.wk}요일 <small>${items.length}건 · ${d.region}</small>`;
+    } else {
+      titleEl.innerHTML = `${selectedDay} <small>${items.length}건</small>`;
+    }
+    document.getElementById('dayDetailSum').textContent = `₩${formatNum(sum)}`;
+    const cont = document.getElementById('dayDetailEntries');
+    if (items.length === 0) {
+      cont.innerHTML = '<div class="day-detail-empty">이 날의 기록이 없어요. 아래에서 추가하세요.</div>';
+    } else {
+      cont.innerHTML = items.map(e => {
+        const cat = categories.find(c => c.id === e.cat);
+        const krw = getEntryKRW(e);
+        return `
+          <div class="entry-row">
+            <div class="entry-cat">${cat ? cat.icon : '📦'}</div>
+            <div class="entry-text">
+              ${cat ? cat.label : ''}${e.memo ? ' · ' + e.memo : ''}
+              ${e.currency === 'IDR' ? `<small>${formatNum(e.amount)} IDR 환산</small>` : ''}
+            </div>
+            <div class="entry-amount">₩${formatNum(krw)}</div>
+            <button class="entry-del" onclick="deleteEntry(${e.id})">✕</button>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  function renderDaily() {
+    // 누적
+    const totalKRW = entries.reduce((s, e) => s + getEntryKRW(e), 0);
+    const uniqueDays = new Set(entries.map(e => e.date)).size;
+    document.getElementById('dailyTotal').textContent = `₩${formatNum(totalKRW)}`;
+    document.getElementById('dailyTotalSub').textContent = entries.length === 0 ? '기록 없음' : `기록 ${entries.length}건 · ${uniqueDays}개 일자`;
+
+    // 카테고리별
+    const catSums = {};
+    categories.forEach(c => { catSums[c.id] = 0; });
+    entries.forEach(e => { catSums[e.cat] = (catSums[e.cat] || 0) + getEntryKRW(e); });
+    const cg = document.getElementById('catSummaryGrid');
+    if (entries.length === 0) {
+      cg.innerHTML = '';
+    } else {
+      cg.innerHTML = categories.filter(c => catSums[c.id] > 0).map(c => `
+        <div class="cat-sum-card">
+          <div class="cat-sum-icon">${c.icon}</div>
+          <div class="cat-sum-info">
+            <div class="cat-sum-label">${c.label}</div>
+            <div class="cat-sum-num">₩${formatNum(catSums[c.id])}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderDailyButtons();
+    renderDayDetail();
+    updateGrandTotal();
+  }
+
+  function updateGrandTotal() {
+    const totalKRW = entries.reduce((s, e) => s + getEntryKRW(e), 0);
+    document.getElementById('totalDailyAmount').innerHTML = `${formatNum(totalKRW)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+    document.getElementById('totalDailyMeta').textContent = entries.length > 0 ? `기록 ${entries.length}건` : '기록 없음';
+    const booked = 3950957;
+    const westinUbud = Math.round(8276400 * exchangeRate);
+    const pendingEst = 1160000;
+    const grand = booked + westinUbud + pendingEst + totalKRW;
+    document.getElementById('grandTotal').textContent = `₩${formatNum(grand)}`;
+  }
+
+  // === EXPLORE TAB ===
+  function renderRegionTabs() {
+    document.getElementById('regionTabs').innerHTML = regions.map(r => `
+      <button class="region-tab ${r.id === activeRegion ? 'active' : ''}" onclick="selectRegion('${r.id}')">${r.label}</button>
+    `).join('');
+  }
+  function selectRegion(id) {
+    activeRegion = id;
+    renderRegionTabs();
+    renderPlaces();
+  }
+
+  document.querySelectorAll('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeType = btn.dataset.type;
+      renderPlaces();
+    });
+  });
+
+  function toggleFav(id) {
+    if (favorites.has(id)) favorites.delete(id);
+    else favorites.add(id);
+    saveData();
+    renderPlaces();
+  }
+
+  function renderPlaces() {
+    let filtered = places.filter(p => p.region === activeRegion);
+    if (activeType === 'eat') filtered = filtered.filter(p => p.type === 'eat');
+    else if (activeType === 'do') filtered = filtered.filter(p => p.type === 'do');
+    else if (activeType === 'fav') filtered = places.filter(p => favorites.has(p.id));
+
+    const cont = document.getElementById('placesContainer');
+    if (filtered.length === 0) {
+      cont.innerHTML = `<div style="background:white;border:1px dashed var(--sand-300);border-radius:14px;padding:30px;text-align:center;color:var(--ink-500);font-size:13px;">${activeType === 'fav' ? '아직 즐겨찾기한 항목이 없어요. 하트를 눌러보세요.' : '이 조건에 맞는 항목이 없어요.'}</div>`;
+      return;
+    }
+
+    cont.innerHTML = filtered.map(p => {
+      const isFav = favorites.has(p.id);
+      const tagsHtml = p.tags.map(t => {
+        let cls = 'place-tag';
+        if (t === '시그니처') cls += ' signature';
+        else if (t === '가족' || t === '키즈클럽') cls += ' kid';
+        return `<span class="${cls}">${t}</span>`;
+      }).join('');
+      return `
+        <div class="place-card">
+          <div class="place-head">
+            <div class="place-name-row">
+              <div class="place-name"><span class="place-icon-inline">${p.icon}</span>${p.name}</div>
+              <div class="place-tags">${tagsHtml}</div>
+            </div>
+            <button class="place-fav ${isFav ? 'active' : ''}" onclick="toggleFav('${p.id}')" title="즐겨찾기">${isFav ? '❤️' : '🤍'}</button>
+          </div>
+          <div class="place-desc">${p.desc}</div>
+          <div class="place-meta">
+            <div class="place-meta-item">
+              <div class="place-meta-label">가격</div>
+              <div class="place-meta-val">${p.price}</div>
+            </div>
+            <div class="place-meta-item">
+              <div class="place-meta-label">위치</div>
+              <div class="place-meta-val">${p.dist}</div>
+            </div>
+            <div class="place-meta-item">
+              <div class="place-meta-label">가족평</div>
+              <div class="place-meta-val">${p.kid}</div>
+            </div>
+          </div>
+          <div class="place-actions">
+            <a class="place-map-btn" href="https://maps.google.com/?q=${p.map}" target="_blank" rel="noopener">📍 Google Maps</a>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // === INIT ===
+  function init() {
+    loadData();
+    renderCatGrid();
+    renderQuickGrid();
+    renderDaily();
+    updateAddBtn();
+    renderRegionTabs();
+    renderPlaces();
+    updateGrandTotal();
+    const westinKrw = Math.round(8276400 * exchangeRate);
+    document.getElementById('westinKrw').innerHTML = `${formatNum(westinKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+    document.getElementById('totalRateInfo').textContent = `1 IDR = ${exchangeRate}원`;
+  }
+
+  init();
+
+  // === PWA Service Worker 등록 ===
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch((err) => {
+        console.log('SW 등록 실패 (오프라인 기능만 영향):', err);
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
