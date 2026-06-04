@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v0.6</title>
+<title>발리 가족 여행 · 2026.08 · v0.7</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -132,6 +132,40 @@
   .region-group-name { font-family: 'Pretendard', sans-serif; font-size: 17px; font-weight: 600; color: var(--ocean-900); line-height: 1.1; }
   .region-group-sub { font-size: 11px; color: var(--ink-500); margin-top: 2px; letter-spacing: 0.3px; }
   .region-group-body { display: flex; flex-direction: column; gap: 10px; padding-left: 4px; }
+
+  /* === STAY BADGE (지역 그룹 헤더 아래) === */
+  .stay-badge {
+    margin: -4px 0 12px 4px;
+    padding: 9px 12px;
+    background: white;
+    border: 1px solid var(--sand-200);
+    border-left: 3px solid var(--ocean-700);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12.5px;
+  }
+  .region-group.transit .stay-badge { border-left-color: var(--gold); }
+  .region-group.island .stay-badge { border-left-color: var(--ocean-500); }
+  .region-group.ubud .stay-badge { border-left-color: var(--green); }
+  .region-group.sanur .stay-badge { border-left-color: var(--coral); }
+  .region-group.travel .stay-badge { border-left-color: var(--ink-300); }
+  .stay-badge-icon { font-size: 14px; }
+  .stay-badge-name { color: var(--ocean-900); font-weight: 600; flex: 1; }
+  .stay-badge-note { color: var(--ink-500); font-size: 11px; }
+
+  /* === HOTEL LINE (이동·체크인/체크아웃 카드 내) === */
+  .hotel-line {
+    display: flex; align-items: center; gap: 6px;
+    margin: 0 0 10px;
+    padding: 6px 10px;
+    background: var(--sand-50);
+    border-radius: 8px;
+    font-size: 11.5px;
+    color: var(--ink-700);
+    border: 1px dashed var(--sand-300);
+  }
+  .hotel-line strong { color: var(--ocean-900); font-weight: 600; }
+  .hotel-line .icon { font-size: 13px; }
 
   /* === DAY CARD (일정) === */
   .day-card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 0; border: 1px solid var(--sand-200); position: relative; overflow: hidden; }
@@ -408,7 +442,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v0.6</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v0.7</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -463,10 +497,16 @@
           <div class="region-group-sub">8.5 → 8.6 · 1박 · 경유</div>
         </div>
       </div>
+      <div class="stay-badge">
+        <span class="stay-badge-icon">🏨</span>
+        <span class="stay-badge-name">ibis Saigon Airport</span>
+        <span class="stay-badge-note">Family Room · 1박</span>
+      </div>
       <div class="region-group-body">
         <div class="day-card transit">
           <div class="day-card-head"><div><span class="day-date">8.5<sup>화</sup></span></div><span class="day-tag pending">도착·시내</span></div>
           <div class="day-title">인천 → 호치민, 1군 시내 풀가동</div>
+          <div class="hotel-line"><span class="icon">🏨→</span> <strong>ibis Saigon Airport</strong> 체크인</div>
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">10:35</div><div class="timeline-text"><strong>VN409</strong> 인천 → 호치민</div></div>
             <div class="timeline-item"><div class="timeline-time">14:00</div><div class="timeline-text">탄손낫 도착, ibis 체크인</div></div>
@@ -489,10 +529,16 @@
           <div class="region-group-sub">8.6 → 8.7 · 1박 · 보트 전날</div>
         </div>
       </div>
+      <div class="stay-badge">
+        <span class="stay-badge-icon">🏨</span>
+        <span class="stay-badge-name">Absolute Scuba Bali Dive Resort</span>
+        <span class="stay-badge-note">1박</span>
+      </div>
       <div class="region-group-body">
         <div class="day-card travel">
           <div class="day-card-head"><div><span class="day-date">8.6<sup>수</sup></span></div><span class="day-tag confirmed">이동</span></div>
           <div class="day-title">호치민 → 덴파사르 → 빠당바이</div>
+          <div class="hotel-line"><span class="icon">🏨←</span> ibis 체크아웃 <span style="margin:0 6px;color:var(--ink-300)">→</span> <span class="icon">🏨→</span> <strong>Absolute Scuba Bali</strong> 체크인</div>
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">06:30</div><div class="timeline-text">ibis 셔틀로 공항</div></div>
             <div class="timeline-item"><div class="timeline-time">10:10</div><div class="timeline-text"><strong>VN641</strong> 호치민 → 덴파사르</div></div>
@@ -510,13 +556,19 @@
         <span class="region-group-icon">🏝️</span>
         <div class="region-group-info">
           <div class="region-group-name">길리 트라왕안</div>
-          <div class="region-group-sub">8.7 → 8.11 · 4박 · Villa Almarik</div>
+          <div class="region-group-sub">8.7 → 8.11 · 4박</div>
         </div>
+      </div>
+      <div class="stay-badge">
+        <span class="stay-badge-icon">🏨</span>
+        <span class="stay-badge-name">Villa Almarik Resort &amp; Spa</span>
+        <span class="stay-badge-note">앞바다 거북이 · 4박</span>
       </div>
       <div class="region-group-body">
         <div class="day-card island">
           <div class="day-card-head"><div><span class="day-date">8.7<sup>목</sup></span></div><span class="day-tag confirmed">도착</span></div>
           <div class="day-title">빠당바이 → 길리 (보트 1.5h)</div>
+          <div class="hotel-line"><span class="icon">🏨←</span> Absolute Scuba 체크아웃 <span style="margin:0 6px;color:var(--ink-300)">→</span> <span class="icon">🏨→</span> <strong>Villa Almarik</strong> 체크인</div>
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">08:00</div><div class="timeline-text"><strong>Bluewater Express</strong> 출발</div><div class="timeline-note">멀미약 30분 전 복용</div></div>
             <div class="timeline-item"><div class="timeline-time">09:30</div><div class="timeline-text">길리 도착 → <strong>Villa Almarik</strong></div><div class="timeline-note">호텔 앞 거북이 스노클링 🐢</div></div>
@@ -564,38 +616,47 @@
         <span class="region-group-icon">🌿</span>
         <div class="region-group-info">
           <div class="region-group-name">우붓</div>
-          <div class="region-group-sub">8.11 → 8.14 · 3박 · Westin Ubud</div>
+          <div class="region-group-sub">8.11 → 8.13 · 2박</div>
         </div>
+      </div>
+      <div class="stay-badge">
+        <span class="stay-badge-icon">🏨</span>
+        <span class="stay-badge-name">The Westin Resort Ubud</span>
+        <span class="stay-badge-note">유료 1박 + 포인트 1박</span>
       </div>
       <div class="region-group-body">
         <div class="day-card travel">
-          <div class="day-card-head"><div><span class="day-date">8.11<sup>월</sup></span></div><span class="day-tag confirmed">이동</span></div>
+          <div class="day-card-head"><div><span class="day-date">8.11<sup>월</sup></span></div><span class="day-tag confirmed">이동·체크인</span></div>
           <div class="day-title">길리 → 빠당바이 → 짠디다사 → 우붓</div>
+          <div class="hotel-line"><span class="icon">🏨←</span> Villa Almarik 체크아웃 <span style="margin:0 6px;color:var(--ink-300)">→</span> <span class="icon">🏨→</span> <strong>Westin Ubud</strong> 체크인 (유료 1박)</div>
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">09:00</div><div class="timeline-text">길리 → 방살 경유 → 빠당바이</div></div>
             <div class="timeline-item"><div class="timeline-time">12:00</div><div class="timeline-text">짠디다사 점심 (마운트 아궁 배경)</div></div>
-            <div class="timeline-item"><div class="timeline-time">15:00</div><div class="timeline-text"><strong>Westin Ubud</strong> 체크인</div></div>
+            <div class="timeline-item"><div class="timeline-time">15:00</div><div class="timeline-text"><strong>Westin Ubud</strong> 체크인 (트윈룸)</div></div>
             <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">우붓 라이브 음악 식당 또는 룸서비스</div></div>
           </div>
         </div>
 
         <div class="day-card ubud">
-          <div class="day-card-head"><div><span class="day-date">8.12<sup>화</sup></span></div><span class="day-tag confirmed">동물원</span></div>
-          <div class="day-title">Bali Zoo + 라이스테라스</div>
+          <div class="day-card-head"><div><span class="day-date">8.12<sup>화</sup></span></div><span class="day-tag confirmed">시내·몽키포레스트</span></div>
+          <div class="day-title">우붓 시내 + 몽키포레스트</div>
+          <div class="hotel-line"><span class="icon">🔁</span> Westin Ubud 같은 객실 연박 (유료 → 포인트로 전환)</div>
           <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">07:00</div><div class="timeline-text">Tegallalang 라이스테라스 (이른 아침)</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>Bali Zoo</strong> (코끼리 라이딩) ⭐</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Naughty Nuri's</strong> 폭립 BBQ</div></div>
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">우붓 시내 산책 + 아트마켓</div></div>
+            <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Milk &amp; Madu 또는 Pizza Bagus</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>몽키포레스트</strong> (3세 동생 부모 동행)</div><div class="timeline-note">먹을 것·반짝이 물건 가방 안에</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Naughty Nuri's 폭립</div></div>
           </div>
         </div>
 
-        <div class="day-card ubud">
-          <div class="day-card-head"><div><span class="day-date">8.13<sup>수</sup></span></div><span class="day-tag confirmed">체험·휴식</span></div>
-          <div class="day-title">쿠킹클래스 또는 풀 데이</div>
+        <div class="day-card travel">
+          <div class="day-card-head"><div><span class="day-date">8.13<sup>수</sup></span></div><span class="day-tag confirmed">이동</span></div>
+          <div class="day-title">우붓 → 사누르 (차로 1h)</div>
+          <div class="hotel-line"><span class="icon">🏨←</span> Westin Ubud 체크아웃 <span style="margin:0 6px;color:var(--ink-300)">→</span> <span class="icon">🏨→</span> <strong>The 1O1 Sanur</strong> 체크인</div>
           <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">Paon Bali 쿠킹클래스 또는 폭포</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>Folk Pool & Gardens</strong> 풀 + 점심</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Saraswati 케착댄스 + 디너</div></div>
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 풀, 짧은 산책 또는 라이스테라스 (시간 되면)</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">사누르 이동, <strong>The 1O1 Sanur</strong> 체크인</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Soul on the Beach</strong> 모래밭 디너</div></div>
           </div>
         </div>
       </div>
@@ -607,25 +668,34 @@
         <span class="region-group-icon">🌅</span>
         <div class="region-group-info">
           <div class="region-group-name">사누르</div>
-          <div class="region-group-sub">8.14 → 8.17 · 3박 · The 1O1 Oasis</div>
+          <div class="region-group-sub">8.13 → 8.17 · 4박</div>
         </div>
+      </div>
+      <div class="stay-badge">
+        <span class="stay-badge-icon">🏨</span>
+        <span class="stay-badge-name">The 1O1 Bali Oasis Sanur</span>
+        <span class="stay-badge-note">4박 (3박+1박 추가 대기)</span>
       </div>
       <div class="region-group-body">
         <div class="day-card sanur">
-          <div class="day-card-head"><div><span class="day-date">8.14<sup>목</sup></span></div><span class="day-tag confirmed">이동·휴양</span></div>
-          <div class="day-title">우붓 → 사누르 (차로 1h)</div>
+          <div class="day-card-head"><div><span class="day-date">8.14<sup>목</sup></span></div><span class="day-tag confirmed">남부투어</span></div>
+          <div class="day-title">발리 남부 풀데이 (Uluwatu + Jimbaran)</div>
           <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">웨스틴 체크아웃, 사누르 이동</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>The 1O1 Sanur</strong> 체크인, 잔잔한 해변</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Soul on the Beach</strong> 모래밭 디너</div></div>
+            <div class="timeline-item"><div class="timeline-time">09:00</div><div class="timeline-text">전용 드라이버 출발</div></div>
+            <div class="timeline-item"><div class="timeline-time">10:30</div><div class="timeline-text"><strong>Pandawa Beach</strong> 잔잔한 해변</div></div>
+            <div class="timeline-item"><div class="timeline-time">12:30</div><div class="timeline-text">짐바란 또는 인근 와룽 점심</div></div>
+            <div class="timeline-item"><div class="timeline-time">15:30</div><div class="timeline-text"><strong>Uluwatu Temple</strong> 절벽 사원</div><div class="timeline-note">원숭이 주의 · 사롱 무료 대여</div></div>
+            <div class="timeline-item"><div class="timeline-time">17:30</div><div class="timeline-text"><strong>Kecak Dance</strong> 일몰 + 전통 무용 ⭐</div></div>
+            <div class="timeline-item"><div class="timeline-time">19:00</div><div class="timeline-text"><strong>Jimbaran Bay</strong> 해변 모래밭 시푸드 디너</div></div>
+            <div class="timeline-item"><div class="timeline-time">22:00</div><div class="timeline-text">사누르 복귀</div></div>
           </div>
         </div>
 
         <div class="day-card sanur">
           <div class="day-card-head"><div><span class="day-date">8.15<sup>금</sup></span></div><span class="day-tag confirmed">쿠타 서핑</span></div>
-          <div class="day-title">쿠타 서핑 당일치기 (7세 형아)</div>
+          <div class="day-title">쿠타 서핑 + 쇼핑 (7세 형아)</div>
           <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">쿠타 이동, 서핑 레슨 (지난번 강사)</div></div>
+            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">쿠타 이동, 서핑 레슨 (지난번 강사 컨택)</div></div>
             <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Beachwalk 쇼핑 + 점심</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">사누르 복귀, 호텔 풀</div></div>
             <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Massimo</strong> 이탈리안 + 젤라토</div></div>
@@ -633,12 +703,12 @@
         </div>
 
         <div class="day-card sanur">
-          <div class="day-card-head"><div><span class="day-date">8.16<sup>토</sup></span></div><span class="day-tag confirmed">일출·자전거</span></div>
-          <div class="day-title">사누르 시그니처 + 선택 액티비티</div>
+          <div class="day-card-head"><div><span class="day-date">8.16<sup>토</sup></span></div><span class="day-tag confirmed">휴양·일출</span></div>
+          <div class="day-title">사누르 시그니처 + 휴식</div>
           <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">05:30</div><div class="timeline-text">일출 (Karang Beach) + Daily Baguette</div></div>
+            <div class="timeline-item"><div class="timeline-time">05:30</div><div class="timeline-text">일출 (Karang Beach) + Daily Baguette 아침</div></div>
             <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">8km 비치 프롬나드 자전거</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">Nusa Lembongan 또는 호텔 휴식 (선택)</div></div>
+            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">호텔 풀, 비치 마사지</div></div>
             <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Sindhu Night Market</strong> 🌟</div></div>
           </div>
         </div>
@@ -658,6 +728,7 @@
         <div class="day-card transit">
           <div class="day-card-head"><div><span class="day-date">8.17<sup>일</sup></span></div><span class="day-tag confirmed">귀국</span></div>
           <div class="day-title">독립기념일 — 교통 여유 있게</div>
+          <div class="hotel-line"><span class="icon">🏨←</span> <strong>The 1O1 Sanur</strong> 체크아웃 → 공항</div>
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">11:00</div><div class="timeline-text">체크아웃, 공항 이동 (30~45분)</div><div class="timeline-note">독립기념일 교통 변수 대비</div></div>
             <div class="timeline-item"><div class="timeline-time">16:00</div><div class="timeline-text"><strong>VN640</strong> 덴파사르 → 호치민</div></div>
@@ -665,6 +736,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </main>
 
@@ -741,15 +813,15 @@
         <div class="stay-head">
           <div>
             <div class="stay-name">The Westin Resort &amp; Spa Ubud</div>
-            <div class="stay-dates">8.11 월 → 8.14 목 · 3박 (2+1)</div>
+            <div class="stay-dates">8.11 월 → 8.13 수 · 2박 (유료 1박 + 포인트 1박)</div>
           </div>
           <span class="stay-region">우붓</span>
         </div>
-        <div class="stay-desc">사옌(Sayan) 지역, Ayung 강가 정글뷰 5성 리조트. 거대 풀, 키즈 어메니티 충실. 시내 차로 10~15분.</div>
+        <div class="stay-desc">사옌(Sayan) 지역, Ayung 강가 정글뷰 5성 리조트. 트윈룸 동일 객실 연박. 거대 풀, 키즈 어메니티 충실. 시내 차로 10~15분.</div>
         <div class="stay-meta">
           <div class="stay-price-box">
-            <div class="stay-price-label">1박 단가 (유료 2박)</div>
-            <div class="stay-price-val small">~4,138k IDR</div>
+            <div class="stay-price-label">유료 1박</div>
+            <div class="stay-price-val small">4,598k IDR</div>
           </div>
           <a class="stay-map-btn" href="https://maps.google.com/?q=Westin+Resort+Ubud" target="_blank" rel="noopener">📍 지도</a>
         </div>
@@ -762,7 +834,7 @@
         <div class="stay-head">
           <div>
             <div class="stay-name">The 1O1 Bali Oasis Sanur</div>
-            <div class="stay-dates">8.14 목 → 8.17 일 · 3박</div>
+            <div class="stay-dates">8.13 수 → 8.17 일 · 4박 (3박 + 1박 추가 예정)</div>
           </div>
           <span class="stay-region">사누르</span>
         </div>
@@ -901,10 +973,10 @@
       <div class="rec-table">
         <div class="rec-row">
           <div>
-            <div class="rec-name">🏨 Westin Ubud (2박, 현지결제)</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">≈ ₩737,000 (환율 기준)</div>
+            <div class="rec-name">🏨 Westin Ubud (1박, 현지결제)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">≈ ₩409,000 (환율 기준)</div>
           </div>
-          <div class="rec-amount" style="color:var(--warning);">8,276,400<small style="font-size:9px;color:var(--ink-500);"> IDR</small></div>
+          <div class="rec-amount" style="color:var(--warning);">4,598,000<small style="font-size:9px;color:var(--ink-500);"> IDR</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -927,7 +999,7 @@
     <div class="subpanel" id="sub-total">
       <div class="daily-total-bar">
         <div class="daily-total-label">여행 총비용 (예상)</div>
-        <div class="daily-total-num" id="grandTotal">₩3,950,957</div>
+        <div class="daily-total-num" id="grandTotal">₩5,820,179</div>
         <div class="daily-total-sub">사전 + 예정 + 현장</div>
       </div>
 
@@ -942,16 +1014,16 @@
         <div class="rec-row">
           <div>
             <div class="rec-name">🏨 Westin 우붓 (현지결제)</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">8,276,400 IDR 환산</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">4,598,000 IDR 환산</div>
           </div>
-          <div class="rec-amount" id="westinKrw">~737,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount" id="westinKrw">~409,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
             <div class="rec-name">📦 기타 예정</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">보트 · 비자·관광세</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">보트 · 비자 · 사누르 1박 · 남부투어</div>
           </div>
-          <div class="rec-amount">~1,160,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount">~1,460,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -1043,10 +1115,10 @@
     <div class="rec-table">
       <div class="rec-row">
         <div>
-          <div class="rec-name">🏨 Westin Ubud (2박)</div>
+          <div class="rec-name">🏨 Westin Ubud (1박, 유료)</div>
           <div class="rec-meta-grid">
             <div class="rec-meta-row"><span class="rec-meta-label">결제</span><span class="rec-meta-val">현지결제 예정</span></div>
-            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">8,276,400 IDR</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">4,598,000 IDR</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">본보이카드</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">Marriott</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/28 23:59</span></div>
@@ -1075,6 +1147,7 @@
       <div class="rec-row">
         <div>
           <div class="rec-name">🌅 The 1O1 Bali Oasis Sanur (3박)</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:4px;">+ 1박 추가 예약 대기 (8/13~14)</div>
           <div class="rec-meta-grid">
             <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/8</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">758,832원</span></div>
@@ -1108,8 +1181,28 @@
     <div class="rec-table">
       <div class="rec-row">
         <div>
+          <div class="rec-name">🌅 The 1O1 Sanur (1박 추가)</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">8/13 → 8/14 · 같은 객실 연박 요청 · Agoda 또는 직접</div>
+        </div>
+        <span class="rec-status pending">대기</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
           <div class="rec-name">🛥️ Bluewater Express 왕복</div>
           <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">8/7 08:00 빠당바이→길리 + 8/11 09~10시 길리→빠당바이 · Klook 한글 예약 추천</div>
+        </div>
+        <span class="rec-status pending">대기</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🚐 남부투어 드라이버 (8/14)</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">전용 드라이버 풀데이 (~9h) · Klook 또는 호텔 컨시어지</div>
         </div>
         <span class="rec-status pending">대기</span>
       </div>
@@ -1216,7 +1309,7 @@
 
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v0.6 · 2026.05
+    안전하고 즐거운 여행 되세요 · v0.7 · 2026.05
   </div>
 
 </div>
@@ -1365,6 +1458,18 @@
     { id: 'sa-10', region: 'sanur', type: 'do', name: '비치 마사지', icon: '💆',
       tags: ['휴식','저렴'], desc: '비치 프롬나드 따라 IDR 100k/시간. 현금만.',
       price: 'IDR 100k/h', dist: '비치 따라', kid: '⭐⭐⭐', map: 'Sanur+Beach' },
+    { id: 'sa-11', region: 'sanur', type: 'do', name: 'Uluwatu Temple', icon: '🏛️',
+      tags: ['남부투어','시그니처','일몰'], desc: '절벽 위 사원, 발리 남부의 상징. 사롱 무료 대여. 원숭이 주의.',
+      price: 'IDR 30k/인', dist: '차 1h', kid: '⭐⭐⭐⭐', map: 'Uluwatu+Temple+Bali' },
+    { id: 'sa-12', region: 'sanur', type: 'do', name: 'Kecak Dance (울루와뚜)', icon: '🔥',
+      tags: ['남부투어','시그니처','전통'], desc: 'Uluwatu 사원에서 일몰 시간 진행되는 전통 무용. 압도적 분위기.',
+      price: 'IDR 150k/인', dist: 'Uluwatu', kid: '⭐⭐⭐⭐', map: 'Uluwatu+Kecak+Dance' },
+    { id: 'sa-13', region: 'sanur', type: 'do', name: 'Pandawa Beach', icon: '🏖️',
+      tags: ['남부투어','해변','가족'], desc: '절벽 깎아 만든 진입로, 잔잔한 해변. 3세 안전.',
+      price: 'IDR 30k/인', dist: '차 1h', kid: '⭐⭐⭐⭐⭐', map: 'Pandawa+Beach+Bali' },
+    { id: 'sa-14', region: 'sanur', type: 'eat', name: 'Jimbaran Bay 시푸드', icon: '🦞',
+      tags: ['남부투어','디너','시그니처'], desc: '해변 모래 위 테이블에서 그릴 시푸드. 인생샷 명소.',
+      price: 'IDR 300~500k/인', dist: '차 50분', kid: '⭐⭐⭐⭐⭐', map: 'Jimbaran+Bay+Seafood' },
 
     // === 호치민 ===
     { id: 'ho-1', region: 'hochiminh', type: 'eat', name: '벤탄 마켓 & 야시장', icon: '🍜',
@@ -1436,7 +1541,7 @@
       renderDaily();
       updateGrandTotal();
       document.getElementById('totalRateInfo').textContent = `1 IDR = ${newRate}원`;
-      const westinKrw = Math.round(8276400 * exchangeRate);
+      const westinKrw = Math.round(4598000 * exchangeRate);
       document.getElementById('westinKrw').innerHTML = `${formatNum(westinKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
       updatePreview();
     }
@@ -1665,8 +1770,8 @@
     document.getElementById('totalDailyAmount').innerHTML = `${formatNum(totalKRW)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     document.getElementById('totalDailyMeta').textContent = entries.length > 0 ? `기록 ${entries.length}건` : '기록 없음';
     const booked = 3950957;
-    const westinUbud = Math.round(8276400 * exchangeRate);
-    const pendingEst = 1160000;
+    const westinUbud = Math.round(4598000 * exchangeRate);
+    const pendingEst = 1460000;
     const grand = booked + westinUbud + pendingEst + totalKRW;
     document.getElementById('grandTotal').textContent = `₩${formatNum(grand)}`;
   }
@@ -1761,7 +1866,7 @@
     renderRegionTabs();
     renderPlaces();
     updateGrandTotal();
-    const westinKrw = Math.round(8276400 * exchangeRate);
+    const westinKrw = Math.round(4598000 * exchangeRate);
     document.getElementById('westinKrw').innerHTML = `${formatNum(westinKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     document.getElementById('totalRateInfo').textContent = `1 IDR = ${exchangeRate}원`;
   }
