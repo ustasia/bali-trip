@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v0.7</title>
+<title>발리 가족 여행 · 2026.08 · v0.8</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -101,9 +101,8 @@
   .overview-body strong { color: var(--ocean-900); font-weight: 600; }
 
   /* === TABS === */
-  .tabs { display: flex; gap: 6px; padding: 18px 16px 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { flex-shrink: 0; padding: 9px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink-500); background: transparent; border: 1px solid var(--sand-300); cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; }
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 18px 16px 12px; }
+  .tab { padding: 9px 8px; border-radius: 100px; font-size: 12.5px; font-weight: 500; color: var(--ink-500); background: transparent; border: 1px solid var(--sand-300); cursor: pointer; transition: all 0.2s; font-family: inherit; white-space: nowrap; text-align: center; }
   .tab.active { background: var(--ocean-900); color: var(--sand-50); border-color: var(--ocean-900); }
 
   .panel { display: none; padding: 0 16px; }
@@ -166,6 +165,20 @@
   }
   .hotel-line strong { color: var(--ocean-900); font-weight: 600; }
   .hotel-line .icon { font-size: 13px; }
+
+  /* === PENDING BOOKINGS BADGE (그룹 헤더 아래 미예약 알림) === */
+  .pending-line {
+    margin: -4px 0 12px 4px;
+    padding: 7px 12px;
+    background: #fbe9d6;
+    border: 1px solid #f0c993;
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11.5px;
+    color: #8d4f1a;
+  }
+  .pending-line strong { color: var(--warning); font-weight: 700; }
+  .pending-line .icon { font-size: 13px; }
 
   /* === DAY CARD (일정) === */
   .day-card { background: white; border-radius: 20px; padding: 18px; margin-bottom: 0; border: 1px solid var(--sand-200); position: relative; overflow: hidden; }
@@ -435,6 +448,41 @@
   /* === FOOTER === */
   .footer-note { text-align: center; padding: 30px 20px; color: var(--ink-500); font-size: 11px; letter-spacing: 1px; }
   .footer-note em { font-family: 'Pretendard', sans-serif; font-style: italic; color: var(--ocean-700); font-size: 13px; display: block; margin-bottom: 4px; }
+
+  /* === EMERGENCY TAB === */
+  .em-critical {
+    background: linear-gradient(135deg, #fbe9d6, #f8d7be);
+    border: 2px solid var(--coral);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .em-critical-title { font-size: 12px; color: var(--coral); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .em-num-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(232,93,79,0.2);
+  }
+  .em-num-row:last-child { border-bottom: none; }
+  .em-num-label { flex: 1; font-size: 12.5px; color: var(--ink-900); font-weight: 600; }
+  .em-num-label small { color: var(--ink-500); font-size: 10.5px; font-weight: 500; display: block; margin-top: 1px; }
+  .em-num-val { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--coral); }
+  .em-num-val a { color: inherit; text-decoration: none; }
+
+  .em-section { margin-bottom: 16px; }
+  .em-section-title {
+    font-size: 12px; color: var(--ink-500); letter-spacing: 1.5px;
+    text-transform: uppercase; font-weight: 600; margin: 0 4px 8px;
+  }
+  .em-card {
+    background: white; border: 1px solid var(--sand-200);
+    border-radius: 12px; padding: 12px 14px;
+    margin-bottom: 8px;
+  }
+  .em-card-region { font-size: 10px; color: var(--gold); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .em-card-name { font-size: 13.5px; font-weight: 600; color: var(--ocean-900); line-height: 1.3; }
+  .em-card-info { font-size: 11.5px; color: var(--ink-700); margin-top: 4px; line-height: 1.5; }
+  .em-card-info strong { color: var(--coral); font-family: 'JetBrains Mono', monospace; }
 </style>
 </head>
 <body>
@@ -442,7 +490,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v0.7</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v0.8</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -469,7 +517,7 @@
     </button>
     <div class="overview-body">
       <p>부부와 두 아이(7세·3세)의 발리·길리 가족 여행. 호치민을 경유해 발리로 들어가는 <strong>11박 12일</strong> 일정이다.</p>
-      <p>동선은 호치민(1박) → 빠당바이(1박) → 길리 트라왕안(4박) → 우붓(3박) → 사누르(3박). <strong>길리 트라왕안 재방문</strong>이 이번 여행의 중심이며, 거점마다 분위기가 다르다. 길리는 해변과 스노클링, 우붓은 자연과 동물원, 사누르는 잔잔한 해변과 쿠타 서핑.</p>
+      <p>동선은 호치민(1박) → 빠당바이(1박) → 길리 트라왕안(4박) → 우붓(2박) → 사누르(4박). <strong>길리 트라왕안 재방문</strong>이 이번 여행의 중심이며, 거점마다 분위기가 다르다. 길리는 해변과 스노클링, 우붓은 시내와 자연, 사누르는 잔잔한 해변과 남부투어·쿠타 서핑.</p>
       <p>관광을 많이 넣기보다 아이들 페이스에 맞춰 휴양과 체험의 균형을 둔다. 무리하지 않고 가족이 함께 쉬면서 한두 가지 특별한 경험을 남기는 것이 목표.</p>
     </div>
   </div>
@@ -478,10 +526,11 @@
     <button class="tab active" data-tab="itinerary">일정</button>
     <button class="tab" data-tab="stay">숙소</button>
     <button class="tab" data-tab="expense">가계부</button>
-    <button class="tab" data-tab="explore">탐색</button>
-    <button class="tab" data-tab="record">예약내역</button>
     <button class="tab" data-tab="fx">환율</button>
+    <button class="tab" data-tab="explore">탐색</button>
+    <button class="tab" data-tab="record">예약</button>
     <button class="tab" data-tab="checklist">체크리스트</button>
+    <button class="tab" data-tab="emergency">비상</button>
   </nav>
 
   <!-- PANEL: ITINERARY -->
@@ -534,6 +583,10 @@
         <span class="stay-badge-name">Absolute Scuba Bali Dive Resort</span>
         <span class="stay-badge-note">1박</span>
       </div>
+      <div class="pending-line">
+        <span class="icon">⚠️</span>
+        <span><strong>대기:</strong> 공항→빠당바이 픽업 차량</span>
+      </div>
       <div class="region-group-body">
         <div class="day-card travel">
           <div class="day-card-head"><div><span class="day-date">8.6<sup>수</sup></span></div><span class="day-tag confirmed">이동</span></div>
@@ -563,6 +616,10 @@
         <span class="stay-badge-icon">🏨</span>
         <span class="stay-badge-name">Villa Almarik Resort &amp; Spa</span>
         <span class="stay-badge-note">앞바다 거북이 · 4박</span>
+      </div>
+      <div class="pending-line">
+        <span class="icon">⚠️</span>
+        <span><strong>대기:</strong> Bluewater Express 왕복 보트 (8/7, 8/11)</span>
       </div>
       <div class="region-group-body">
         <div class="day-card island">
@@ -624,6 +681,10 @@
         <span class="stay-badge-name">The Westin Resort Ubud</span>
         <span class="stay-badge-note">유료 1박 + 포인트 1박</span>
       </div>
+      <div class="pending-line">
+        <span class="icon">⚠️</span>
+        <span><strong>대기:</strong> 우붓→사누르 픽업 차량 · 객실 연박 메일</span>
+      </div>
       <div class="region-group-body">
         <div class="day-card travel">
           <div class="day-card-head"><div><span class="day-date">8.11<sup>월</sup></span></div><span class="day-tag confirmed">이동·체크인</span></div>
@@ -674,7 +735,11 @@
       <div class="stay-badge">
         <span class="stay-badge-icon">🏨</span>
         <span class="stay-badge-name">The 1O1 Bali Oasis Sanur</span>
-        <span class="stay-badge-note">4박 (3박+1박 추가 대기)</span>
+        <span class="stay-badge-note">4박</span>
+      </div>
+      <div class="pending-line">
+        <span class="icon">⚠️</span>
+        <span><strong>대기:</strong> 남부투어 드라이버 · 쿠타 서핑 컨택 · 공항 픽업</span>
       </div>
       <div class="region-group-body">
         <div class="day-card sanur">
@@ -829,12 +894,12 @@
     </div>
 
     <div class="stay-card">
-      <div class="stay-thumb" id="thumb-101" style="background-image: url('https://phm-hotels.com/static/uploads/images/media-690d6097-c470-40c6-b658-5bf3863e4c10.png');"></div>
+      <div class="stay-thumb" id="thumb-101" style="background-image: url('https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/95/d4/5d/main-pool.jpg');"></div>
       <div class="stay-body">
         <div class="stay-head">
           <div>
             <div class="stay-name">The 1O1 Bali Oasis Sanur</div>
-            <div class="stay-dates">8.13 수 → 8.17 일 · 4박 (3박 + 1박 추가 예정)</div>
+            <div class="stay-dates">8.13 수 → 8.17 일 · 4박</div>
           </div>
           <span class="stay-region">사누르</span>
         </div>
@@ -926,8 +991,8 @@
     <div class="subpanel" id="sub-booked">
       <div class="daily-total-bar">
         <div class="daily-total-label">사전 결제 완료</div>
-        <div class="daily-total-num">₩3,950,957</div>
-        <div class="daily-total-sub">항공 + 숙소 5건 (현금성)</div>
+        <div class="daily-total-num">₩4,202,689</div>
+        <div class="daily-total-sub">항공 + 숙소 6건 (현금성)</div>
       </div>
 
       <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:14px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결제 완료</h3>
@@ -967,6 +1032,13 @@
           </div>
           <div class="rec-amount">129,544<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🌅 The 1O1 Sanur (1박 추가)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">사누르 · 6/2 결제</div>
+          </div>
+          <div class="rec-amount">251,732<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
       </div>
 
       <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결제 예정</h3>
@@ -999,7 +1071,7 @@
     <div class="subpanel" id="sub-total">
       <div class="daily-total-bar">
         <div class="daily-total-label">여행 총비용 (예상)</div>
-        <div class="daily-total-num" id="grandTotal">₩5,820,179</div>
+        <div class="daily-total-num" id="grandTotal">₩5,821,911</div>
         <div class="daily-total-sub">사전 + 예정 + 현장</div>
       </div>
 
@@ -1007,9 +1079,9 @@
         <div class="rec-row">
           <div>
             <div class="rec-name">✅ 사전 결제 완료</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">항공 + 숙소 5건</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">항공 + 숙소 6건</div>
           </div>
-          <div class="rec-amount">3,950,957<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount">4,202,689<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -1021,9 +1093,9 @@
         <div class="rec-row">
           <div>
             <div class="rec-name">📦 기타 예정</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">보트 · 비자 · 사누르 1박 · 남부투어</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">보트 · 비자 · 남부투어 · 픽업</div>
           </div>
-          <div class="rec-amount">~1,460,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount">~1,210,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -1147,7 +1219,6 @@
       <div class="rec-row">
         <div>
           <div class="rec-name">🌅 The 1O1 Bali Oasis Sanur (3박)</div>
-          <div style="font-size:11.5px;color:var(--ink-500);margin-top:4px;">+ 1박 추가 예약 대기 (8/13~14)</div>
           <div class="rec-meta-grid">
             <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/8</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">758,832원</span></div>
@@ -1163,11 +1234,28 @@
     <div class="rec-table">
       <div class="rec-row">
         <div>
+          <div class="rec-name">🌅 The 1O1 Sanur (1박 추가, 8/13~14)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">6/2</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">251,732원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">페이코 복지P</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">Agoda</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/23</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
           <div class="rec-name">🛏️ ibis Saigon Airport (1박)</div>
           <div class="rec-meta-grid">
             <div class="rec-meta-row"><span class="rec-meta-label">결제일</span><span class="rec-meta-val">5/22</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">129,544원</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">페이코 복지P</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">플랫폼</span><span class="rec-meta-val">하나투어</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">룸타입</span><span class="rec-meta-val">Family / 조식X</span></div>
             <div class="rec-meta-row"><span class="rec-meta-label">취소기한</span><span class="rec-meta-val">7/30</span></div>
           </div>
@@ -1177,16 +1265,6 @@
     </div>
 
     <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결정·예약 대기</h3>
-
-    <div class="rec-table">
-      <div class="rec-row">
-        <div>
-          <div class="rec-name">🌅 The 1O1 Sanur (1박 추가)</div>
-          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">8/13 → 8/14 · 같은 객실 연박 요청 · Agoda 또는 직접</div>
-        </div>
-        <span class="rec-status pending">대기</span>
-      </div>
-    </div>
 
     <div class="rec-table">
       <div class="rec-row">
@@ -1283,7 +1361,8 @@
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">e-VOA 신청 (4인분)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">발리 관광세 사전결제 (Love Bali)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">여행자보험 가입</div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">웨스틴 객실 연박 메일</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">웨스틴 우붓 객실 연박 메일 (8/11~13)</div></div>
+      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">1O1 사누르 객실 연박 메일 (8/13~17)</div></div>
     </div>
 
     <div class="checklist-section">
@@ -1307,9 +1386,122 @@
     </div>
   </main>
 
+  <!-- PANEL: EMERGENCY -->
+  <main class="panel" id="panel-emergency">
+    <h2 class="section-title">비상 연락처 <small>EMERGENCY</small></h2>
+
+    <div class="em-critical">
+      <div class="em-critical-title">🚨 핵심 5개 (즉시 통화)</div>
+      <div class="em-num-row">
+        <div class="em-num-label">인도네시아 통합 긴급<small>경찰·구급·화재 통합</small></div>
+        <div class="em-num-val"><a href="tel:112">112</a></div>
+      </div>
+      <div class="em-num-row">
+        <div class="em-num-label">한국 영사안전콜센터<small>24시간 · 한국어</small></div>
+        <div class="em-num-val"><a href="tel:+82232100404">+82-2-3210-0404</a></div>
+      </div>
+      <div class="em-num-row">
+        <div class="em-num-label">주발리 분관<small>발리 1순위 · 한국어</small></div>
+        <div class="em-num-val"><a href="tel:+623619588040">+62-361-9588-040</a></div>
+      </div>
+      <div class="em-num-row">
+        <div class="em-num-label">BIMC Ubud 병원<small>웨스틴 도보 거리 · 24h</small></div>
+        <div class="em-num-val"><a href="tel:+623612091030">+62-361-2091030</a></div>
+      </div>
+      <div class="em-num-row">
+        <div class="em-num-label">Bali International Hospital<small>사누르 · 텍스트 가능</small></div>
+        <div class="em-num-val"><a href="tel:081211661127">081-211-661-127</a></div>
+      </div>
+    </div>
+
+    <div class="em-section">
+      <div class="em-section-title">🏥 지역별 병원</div>
+
+      <div class="em-card">
+        <div class="em-card-region">사누르</div>
+        <div class="em-card-name">Bali International Hospital</div>
+        <div class="em-card-info">사누르 카자 · 싱가포르 SingHealth 제휴 · <strong>081-211-661-127</strong> (텍스트)</div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-region">쿠타 (사누르 차 30분)</div>
+        <div class="em-card-name">Siloam Hospitals Bali · JCI 인증</div>
+        <div class="em-card-info">Jl. Sunset Road 818 · 응급 24h <strong>1-500-91</strong> · 대표 <strong>+62-361-779-900</strong></div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-region">쿠타</div>
+        <div class="em-card-name">BIMC Hospital Kuta</div>
+        <div class="em-card-info">ACHS 인증 · 영어 가능 · <strong>+62-361-761-263</strong></div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-region">우붓</div>
+        <div class="em-card-name">BIMC Hospital Ubud · 1순위</div>
+        <div class="em-card-info">웨스틴 차 5~10분 · 24h · <strong>+62-361-2091030</strong></div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-region">길리</div>
+        <div class="em-card-name">길리 트라왕안 클리닉</div>
+        <div class="em-card-info">섬 내 기본 진료소 · 경증만 · 중증 시 호텔 통해 발리 후송</div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-region">호치민</div>
+        <div class="em-card-name">FV Hospital (Franco-Vietnamese)</div>
+        <div class="em-card-info">7군 · 영어 가능 · 대표 <strong>+84-28-5411-3333</strong> · 응급 <strong>+84-28-5411-3500</strong></div>
+      </div>
+    </div>
+
+    <div class="em-section">
+      <div class="em-section-title">🇰🇷 한국 영사</div>
+      <div class="em-card">
+        <div class="em-card-name">영사안전콜센터 (서울, 24h)</div>
+        <div class="em-card-info">한국어 · 사건사고 즉시 도움 · <strong>+82-2-3210-0404</strong></div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-name">주발리 대한민국 분관</div>
+        <div class="em-card-info">발리 1순위 · <strong>+62-361-9588-040</strong> · 무료 앱: "영사안전콜센터 무료전화"</div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-name">주인도네시아 대사관 (자카르타)</div>
+        <div class="em-card-info">대표 <strong>+62-21-2967-2555</strong> · 긴급 <strong>+62-811-852-446</strong></div>
+      </div>
+    </div>
+
+    <div class="em-section">
+      <div class="em-section-title">🚑 인도네시아 긴급번호</div>
+      <div class="em-card">
+        <div class="em-card-info">통합 긴급 <strong>112</strong> · 경찰 <strong>110</strong> · 화재 <strong>113</strong> · 구급차 <strong>118 / 119</strong></div>
+      </div>
+    </div>
+
+    <div class="em-section">
+      <div class="em-section-title">💊 약·약국</div>
+      <div class="em-card">
+        <div class="em-card-name">Halodoc 앱 ⭐ 출국 전 설치</div>
+        <div class="em-card-info">인도네시아 24시간 약 배달 앱 · 영어 OK · 일반 약 처방전 없이</div>
+      </div>
+      <div class="em-card">
+        <div class="em-card-name">Apotek K-24 (24시간 약국 체인)</div>
+        <div class="em-card-info">발리 어디든 흔함 · 해열·진통·소화제 등 일반 약 대부분</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">💼 여행자보험</div>
+      <div class="info-box-text">출국 1주 전 가입 필수. <strong>어린이 의료비 + 의료 후송 보장</strong> 옵션 확인. 사고 시 ① 호텔 알림 → ② 보험사 24h 핫라인 → ③ 영문 진단서·영수증.</div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">🆘 사고 시 행동</div>
+      <div class="info-box-text">
+        <strong>Level 1 (경미):</strong> 호텔 프론트 → Halodoc 앱<br>
+        <strong>Level 2 (중증):</strong> 즉시 호텔 → 가까운 BIMC/BIH/Siloam → 보험사 핫라인<br>
+        <strong>Level 3 (응급):</strong> <strong>112</strong> + 호텔 + 24h 응급실 + 영사 통보
+      </div>
+    </div>
+  </main>
+
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v0.7 · 2026.05
+    안전하고 즐거운 여행 되세요 · v0.8 · 2026.06
   </div>
 
 </div>
@@ -1769,9 +1961,9 @@
     const totalKRW = entries.reduce((s, e) => s + getEntryKRW(e), 0);
     document.getElementById('totalDailyAmount').innerHTML = `${formatNum(totalKRW)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     document.getElementById('totalDailyMeta').textContent = entries.length > 0 ? `기록 ${entries.length}건` : '기록 없음';
-    const booked = 3950957;
+    const booked = 4202689;
     const westinUbud = Math.round(4598000 * exchangeRate);
-    const pendingEst = 1460000;
+    const pendingEst = 1210000;
     const grand = booked + westinUbud + pendingEst + totalKRW;
     document.getElementById('grandTotal').textContent = `₩${formatNum(grand)}`;
   }
