@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v0.8</title>
+<title>발리 가족 여행 · 2026.08 · v0.9</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -76,6 +76,59 @@
   .family-icon.kid { background: var(--coral); color: white; }
   .family-text { font-size: 13px; color: var(--ink-700); }
   .family-text strong { color: var(--ink-900); font-weight: 600; }
+
+  /* === SYNC STATUS BAR === */
+  .sync-bar {
+    margin: 12px 16px 0;
+    padding: 9px 12px;
+    background: white;
+    border: 1px solid var(--sand-200);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+  .sync-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ink-300);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .sync-bar.synced .sync-dot { background: #4caf50; box-shadow: 0 0 0 3px rgba(76,175,80,0.15); }
+  .sync-bar.offline .sync-dot { background: var(--warning); }
+  .sync-bar.connecting .sync-dot { background: var(--gold); animation: pulse 1.2s infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .sync-status-text {
+    flex: 1;
+    color: var(--ink-700);
+    font-weight: 500;
+  }
+  .sync-status-text small {
+    color: var(--ink-500);
+    font-weight: 400;
+    font-size: 10.5px;
+    display: block;
+    margin-top: 1px;
+  }
+  .sync-share-btn {
+    background: var(--ocean-700);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 6px 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .sync-share-btn:active { background: var(--ocean-900); }
+  .sync-share-btn.copied { background: #4caf50; }
 
   /* === OVERVIEW TOGGLE === */
   .overview { margin: 14px 16px 0; }
@@ -490,7 +543,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v0.8</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v0.9</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -508,6 +561,15 @@
       <span class="family-icon kid">🧒</span>
     </div>
     <div class="family-text"><strong>4인 가족</strong> · 부부 + 7세 형아 + 3세 동생</div>
+  </div>
+
+  <div class="sync-bar connecting" id="syncBar">
+    <span class="sync-dot"></span>
+    <div class="sync-status-text" id="syncStatusText">
+      연결 중...
+      <small id="syncStatusSub">가족과 데이터 공유</small>
+    </div>
+    <button class="sync-share-btn" id="syncShareBtn" onclick="copyShareUrl()">공유 URL</button>
   </div>
 
   <div class="overview" id="overview">
@@ -1501,10 +1563,48 @@
 
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v0.8 · 2026.06
+    안전하고 즐거운 여행 되세요 · v0.9 · 2026.06
   </div>
 
 </div>
+
+<!-- === FIREBASE (v10+ modular, ES modules from CDN) === -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+  import {
+    getFirestore, doc, setDoc, deleteDoc, onSnapshot, collection,
+    enableIndexedDbPersistence, serverTimestamp
+  } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDas1Gf3-BRwjNgfcae-xEIZqiB-UFCins",
+    authDomain: "bali-trip-a17bc.firebaseapp.com",
+    projectId: "bali-trip-a17bc",
+    storageBucket: "bali-trip-a17bc.firebasestorage.app",
+    messagingSenderId: "964514029868",
+    appId: "1:964514029868:web:a641e89723b6cc68868c89"
+  };
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 오프라인 persistence 활성화 (인터넷 끊겨도 캐시로 작동)
+  try {
+    await enableIndexedDbPersistence(db);
+  } catch (err) {
+    // 이미 다른 탭에서 활성화됐거나 브라우저 미지원인 경우
+    console.log('IndexedDB persistence not enabled:', err.code);
+  }
+
+  // 전역 노출 (일반 script에서 사용)
+  window.firebaseDB = {
+    db, doc, setDoc, deleteDoc, onSnapshot, collection, serverTimestamp
+  };
+
+  // 준비 완료 알림
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
 
 <script>
   // === STATE ===
@@ -1805,15 +1905,22 @@
     const amt = parseFloat(document.getElementById('amountInput').value) || 0;
     if (!selectedCat || amt <= 0) return;
     const memo = document.getElementById('memoInput').value.trim();
-    entries.push({
-      id: Date.now() + Math.random(),
+    // 고유 ID (Firestore doc ID 로도 사용) — 밀리초 + 3자리 랜덤
+    const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+    const entry = {
+      id: id,
       date: selectedDay,
       cat: selectedCat,
       amount: amt,
       currency: selectedCur,
       memo
-    });
-    saveData();
+    };
+    entries.push(entry);
+    saveDataLocal();
+    // Firestore 저장 (실시간 리스너가 다른 폰에 전파)
+    if (fbReady && tripCode) {
+      saveEntryToFirestore(entry);
+    }
     renderDaily();
     document.getElementById('amountInput').value = '';
     document.getElementById('memoInput').value = '';
@@ -1824,37 +1931,248 @@
   function deleteEntry(id) {
     if (!confirm('이 기록을 삭제할까요?')) return;
     entries = entries.filter(e => e.id !== id);
-    saveData();
+    saveDataLocal();
+    if (fbReady && tripCode) {
+      deleteEntryFromFirestore(id);
+    }
     renderDaily();
   }
-  function clearAll() {
+  async function clearAll() {
     if (!confirm('전체 현장 경비 기록을 모두 삭제할까요?\n(되돌릴 수 없어요)')) return;
+    const oldEntries = [...entries];
     entries = [];
-    saveData();
+    saveDataLocal();
     renderDaily();
+    // Firestore에서도 각 문서 삭제
+    if (fbReady && tripCode) {
+      for (const e of oldEntries) {
+        await deleteEntryFromFirestore(e.id);
+      }
+    }
   }
 
   // === SAVE/LOAD ===
-  function saveData() {
+  // === TRIP CODE + FIREBASE STATE ===
+  let tripCode = null;              // URL 파라미터 or 자동 생성
+  let fbReady = false;              // Firebase 초기화 완료
+  let fbUnsubscribers = [];         // 실시간 리스너 해제 함수들
+  let saveQueue = [];               // Firebase 준비 안 됐을 때 대기열
+
+  // 트립 코드 확보: URL에 있으면 사용, 없으면 로컬에 저장된 것 or 새로 생성
+  function ensureTripCode() {
+    const params = new URLSearchParams(location.search);
+    let code = params.get('trip');
+    if (code && /^[a-z0-9]{6,20}$/i.test(code)) {
+      tripCode = code;
+      localStorage.setItem('bali_last_trip', code);
+      return;
+    }
+    // URL에 코드 없음 → 로컬에 저장된 것 확인
+    const last = localStorage.getItem('bali_last_trip');
+    if (last && /^[a-z0-9]{6,20}$/i.test(last)) {
+      tripCode = last;
+      // URL에 반영 (history API, 새로고침 없이)
+      params.set('trip', tripCode);
+      const newUrl = location.pathname + '?' + params.toString() + location.hash;
+      history.replaceState(null, '', newUrl);
+      return;
+    }
+    // 새 코드 생성 (12자 랜덤)
+    const chars = 'abcdefghjkmnpqrstuvwxyz23456789'; // 헷갈리는 0/o/1/l/i 제외
+    let generated = '';
+    for (let i = 0; i < 12; i++) generated += chars[Math.floor(Math.random() * chars.length)];
+    tripCode = generated;
+    localStorage.setItem('bali_last_trip', tripCode);
+    params.set('trip', tripCode);
+    const newUrl = location.pathname + '?' + params.toString() + location.hash;
+    history.replaceState(null, '', newUrl);
+  }
+
+  // 상단 배지 상태 갱신
+  function setSyncStatus(state, mainText, subText) {
+    const bar = document.getElementById('syncBar');
+    const main = document.getElementById('syncStatusText');
+    const sub = document.getElementById('syncStatusSub');
+    if (!bar) return;
+    bar.classList.remove('synced', 'offline', 'connecting');
+    bar.classList.add(state);
+    // main.firstChild 유지하며 텍스트만 갱신
+    main.childNodes[0].nodeValue = mainText;
+    if (sub && subText != null) sub.textContent = subText;
+  }
+
+  // 공유 URL 복사
+  window.copyShareUrl = async function() {
+    if (!tripCode) return;
+    const url = location.origin + location.pathname + '?trip=' + tripCode;
+    const btn = document.getElementById('syncShareBtn');
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        // fallback: 텍스트 영역으로 복사
+        const ta = document.createElement('textarea');
+        ta.value = url; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      btn.textContent = '복사됨 ✓';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '공유 URL';
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch (err) {
+      // 실패 시 URL을 그냥 보여줌
+      prompt('아래 URL을 복사해서 공유하세요:', url);
+    }
+  };
+
+  // === LOAD (Firestore 실시간 리스너) ===
+  function attachFirestoreListeners() {
+    const fb = window.firebaseDB;
+    if (!fb || !tripCode) return;
+    const { db, doc, collection, onSnapshot } = fb;
+
+    // 1) entries 컬렉션 실시간 리스너
+    const entriesCol = collection(db, 'trips', tripCode, 'entries');
+    const unsubEntries = onSnapshot(entriesCol, (snap) => {
+      const arr = [];
+      snap.forEach(d => arr.push(d.data()));
+      // id로 정렬 유지
+      arr.sort((a, b) => (a.id || 0) - (b.id || 0));
+      entries = arr;
+      renderExpenseAll();
+      setSyncStatus('synced', '동기화됨 ✓', '가족과 실시간 공유 중');
+    }, (err) => {
+      console.log('entries listener error:', err);
+      setSyncStatus('offline', '오프라인', '로컬에만 저장됨');
+    });
+    fbUnsubscribers.push(unsubEntries);
+
+    // 2) meta 문서 (환율, 즐겨찾기) 실시간 리스너
+    const metaRef = doc(db, 'trips', tripCode, 'meta', 'settings');
+    const unsubMeta = onSnapshot(metaRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        if (typeof data.exchangeRate === 'number') {
+          exchangeRate = data.exchangeRate;
+          const inp = document.getElementById('rateInput');
+          const disp = document.getElementById('rateDisplay');
+          if (inp) inp.value = exchangeRate;
+          if (disp) disp.textContent = (exchangeRate * 1000).toFixed(1).replace(/\.0$/, '');
+        }
+        if (Array.isArray(data.favorites)) {
+          favorites = new Set(data.favorites);
+        }
+      }
+    });
+    fbUnsubscribers.push(unsubMeta);
+  }
+
+  // === SAVE (Firestore 개별 저장) ===
+  async function saveEntryToFirestore(entry) {
+    const fb = window.firebaseDB;
+    if (!fb || !tripCode) return false;
+    const { db, doc, setDoc, serverTimestamp } = fb;
+    try {
+      const ref = doc(db, 'trips', tripCode, 'entries', String(entry.id));
+      await setDoc(ref, { ...entry, updatedAt: serverTimestamp() });
+      return true;
+    } catch (err) {
+      console.log('saveEntry failed:', err);
+      setSyncStatus('offline', '오프라인', '로컬 캐시에 저장됨');
+      return false;
+    }
+  }
+
+  async function deleteEntryFromFirestore(entryId) {
+    const fb = window.firebaseDB;
+    if (!fb || !tripCode) return false;
+    const { db, doc, deleteDoc } = fb;
+    try {
+      await deleteDoc(doc(db, 'trips', tripCode, 'entries', String(entryId)));
+      return true;
+    } catch (err) {
+      console.log('deleteEntry failed:', err);
+      return false;
+    }
+  }
+
+  async function saveMetaToFirestore() {
+    const fb = window.firebaseDB;
+    if (!fb || !tripCode) return false;
+    const { db, doc, setDoc, serverTimestamp } = fb;
+    try {
+      const ref = doc(db, 'trips', tripCode, 'meta', 'settings');
+      await setDoc(ref, {
+        exchangeRate: exchangeRate,
+        favorites: [...favorites],
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      return true;
+    } catch (err) {
+      console.log('saveMeta failed:', err);
+      return false;
+    }
+  }
+
+  // 로컬 fallback (기존 localStorage 방식 유지)
+  function saveDataLocal() {
     try {
       localStorage.setItem('bali_entries_v4', JSON.stringify(entries));
       localStorage.setItem('bali_rate_v4', String(exchangeRate));
       localStorage.setItem('bali_favs_v4', JSON.stringify([...favorites]));
     } catch (e) {}
   }
-  function loadData() {
+  function loadDataLocal() {
     try {
       const saved = localStorage.getItem('bali_entries_v4');
       if (saved) entries = JSON.parse(saved);
       const savedRate = localStorage.getItem('bali_rate_v4');
       if (savedRate) {
         exchangeRate = parseFloat(savedRate);
-        document.getElementById('rateInput').value = exchangeRate;
-        document.getElementById('rateDisplay').textContent = (exchangeRate * 1000).toFixed(1).replace(/\.0$/, '');
+        const inp = document.getElementById('rateInput');
+        const disp = document.getElementById('rateDisplay');
+        if (inp) inp.value = exchangeRate;
+        if (disp) disp.textContent = (exchangeRate * 1000).toFixed(1).replace(/\.0$/, '');
       }
       const savedFavs = localStorage.getItem('bali_favs_v4');
       if (savedFavs) favorites = new Set(JSON.parse(savedFavs));
     } catch (e) {}
+  }
+
+  // === UNIFIED SAVE/LOAD ===
+  // 기존 코드가 saveData()를 호출하는 곳들을 그대로 살리기 위해
+  // saveData는 Firestore + local 둘 다 시도
+  function saveData() {
+    // 로컬은 항상 시도 (오프라인 대비)
+    saveDataLocal();
+    // Firestore도 시도
+    if (fbReady && tripCode) {
+      saveMetaToFirestore(); // 환율·즐겨찾기 저장
+      // entries는 개별 저장 (addEntry/deleteEntry에서 직접 호출)
+    }
+  }
+  function loadData() {
+    // 우선 로컬 로드 (즉시 화면 그리기 위해)
+    loadDataLocal();
+    // Firestore 리스너는 fb-ready 이벤트 후 attachFirestoreListeners에서
+  }
+
+  // === RENDER helper (리스너에서 호출) ===
+  function renderExpenseAll() {
+    if (typeof renderDailyButtons === 'function') renderDailyButtons();
+    if (typeof renderDaily === 'function') renderDaily();
+    if (typeof updateGrandTotal === 'function') updateGrandTotal();
+    // 환율 관련 UI 갱신
+    const westinKrwEl = document.getElementById('westinKrw');
+    if (westinKrwEl) {
+      const w = Math.round(4598000 * exchangeRate);
+      westinKrwEl.innerHTML = `${formatNum(w)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+    }
+    const rateInfoEl = document.getElementById('totalRateInfo');
+    if (rateInfoEl) rateInfoEl.textContent = `1 IDR = ${exchangeRate}원`;
   }
 
   // === EXPENSE RENDER ===
@@ -2050,6 +2368,10 @@
 
   // === INIT ===
   function init() {
+    // 1) 트립 코드 확보 (URL 파라미터 or 새로 생성)
+    ensureTripCode();
+
+    // 2) 로컬 데이터 우선 로드 (즉시 화면 그리기)
     loadData();
     renderCatGrid();
     renderQuickGrid();
@@ -2061,6 +2383,30 @@
     const westinKrw = Math.round(4598000 * exchangeRate);
     document.getElementById('westinKrw').innerHTML = `${formatNum(westinKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     document.getElementById('totalRateInfo').textContent = `1 IDR = ${exchangeRate}원`;
+
+    // 3) Firebase 준비되면 실시간 리스너 연결
+    function onFbReady() {
+      fbReady = true;
+      setSyncStatus('connecting', '연결 중...', '가족과 데이터 공유');
+      attachFirestoreListeners();
+    }
+    if (window.firebaseDB) {
+      onFbReady();
+    } else {
+      window.addEventListener('firebase-ready', onFbReady, { once: true });
+      // 3초 안에 준비 안 되면 오프라인 표시
+      setTimeout(() => {
+        if (!fbReady) setSyncStatus('offline', '오프라인', '로컬 저장만 사용 중');
+      }, 3000);
+    }
+
+    // 4) 오프라인/온라인 이벤트
+    window.addEventListener('online', () => {
+      if (fbReady) setSyncStatus('connecting', '재연결 중...', '가족과 데이터 공유');
+    });
+    window.addEventListener('offline', () => {
+      setSyncStatus('offline', '오프라인', '연결되면 자동 동기화');
+    });
   }
 
   init();
