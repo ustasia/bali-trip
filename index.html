@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v0.9</title>
+<title>발리 가족 여행 · 2026.08 · v1.0</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -248,6 +248,98 @@
   .day-tag.confirmed { background: var(--green-soft); color: #3d6b41; }
   .day-tag.pending { background: #fbe9d6; color: #8d4f1a; }
   .day-title { font-size: 14px; color: var(--ink-700); margin-bottom: 14px; font-weight: 500; }
+
+  /* === POOL (길리 자유일 카드) === */
+  .day-card.flex-days .day-title {
+    color: var(--ink-900);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .pool-section {
+    background: var(--sand-50);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid var(--sand-200);
+  }
+  .pool-section:last-of-type { margin-bottom: 12px; }
+  .pool-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ocean-900);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pool-icon { font-size: 15px; }
+  .pool-desc {
+    font-size: 11.5px;
+    color: var(--ink-500);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .pool-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .pool-item {
+    background: white;
+    border-radius: 9px;
+    padding: 9px 11px;
+    border: 1px solid var(--sand-200);
+  }
+  .pool-item-name {
+    font-size: 13px;
+    color: var(--ink-900);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .pool-item-meta {
+    font-size: 11px;
+    color: var(--ink-500);
+    margin-top: 2px;
+    line-height: 1.35;
+  }
+  .pool-meal-block {
+    margin-bottom: 9px;
+  }
+  .pool-meal-block:last-child { margin-bottom: 0; }
+  .pool-meal-label {
+    font-size: 11.5px;
+    color: var(--ink-700);
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .pool-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--ink-700);
+  }
+  .pool-chip {
+    background: white;
+    border: 1px solid var(--sand-200);
+    border-radius: 100px;
+    padding: 4px 10px;
+    font-size: 11.5px;
+    color: var(--ink-900);
+  }
+  .pool-tip {
+    background: linear-gradient(135deg, rgba(212,165,116,0.10), rgba(232,93,79,0.06));
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--ink-700);
+    line-height: 1.5;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .pool-tip-icon { flex-shrink: 0; }
+  .pool-tip strong { color: var(--ocean-900); font-weight: 600; }
   .timeline { border-left: 1px dashed var(--sand-300); padding-left: 14px; margin-left: 4px; }
   .timeline-item { margin-bottom: 12px; position: relative; }
   .timeline-item::before { content: ''; position: absolute; left: -19px; top: 5px; width: 9px; height: 9px; border-radius: 50%; background: var(--ocean-500); border: 2px solid white; box-shadow: 0 0 0 1px var(--ocean-300); }
@@ -543,7 +635,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v0.9</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v1.0</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -692,38 +784,83 @@
             <div class="timeline-item"><div class="timeline-time">08:00</div><div class="timeline-text"><strong>Bluewater Express</strong> 출발</div><div class="timeline-note">멀미약 30분 전 복용</div></div>
             <div class="timeline-item"><div class="timeline-time">09:30</div><div class="timeline-text">길리 도착 → <strong>Villa Almarik</strong></div><div class="timeline-note">호텔 앞 거북이 스노클링 🐢</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">동네 산책, 자전거 대여, 해변 적응</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Banyan Tree 캐주얼 디너</div></div>
           </div>
         </div>
 
-        <div class="day-card island">
-          <div class="day-card-head"><div><span class="day-date">8.8<sup>금</sup></span></div><span class="day-tag confirmed">스노클링</span></div>
-          <div class="day-title">3 길리 글래스보텀 보트 투어</div>
-          <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 앞 거북이 스노클링</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>3 길리 보트 투어</strong> (거북이·수중동상)</div><div class="timeline-note">3세도 글래스보텀으로 OK</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Scallywags</strong> BBQ 시푸드</div></div>
+        <div class="day-card island flex-days">
+          <div class="day-card-head">
+            <div><span class="day-date">8.8<sup>금</sup> ~ 8.10<sup>일</sup></span></div>
+            <span class="day-tag confirmed">자유일 3일</span>
           </div>
-        </div>
+          <div class="day-title">길리에서의 3일 — 기분 따라 선택</div>
 
-        <div class="day-card island">
-          <div class="day-card-head"><div><span class="day-date">8.9<sup>토</sup></span></div><span class="day-tag confirmed">자전거·일몰</span></div>
-          <div class="day-title">자전거 섬 일주 + 선셋 비치</div>
-          <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">자전거로 북쪽·서쪽 해변 탐험</div></div>
-            <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Karma Kayak (수영하며 식사)</div></div>
-            <div class="timeline-item"><div class="timeline-time">17:30</div><div class="timeline-text">Sunset Point 일몰 + 해먹 그네</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Sendja @ Kardia</strong> 비치 디너</div></div>
+          <div class="pool-section">
+            <div class="pool-title"><span class="pool-icon">🌊</span>액티비티 풀</div>
+            <div class="pool-desc">그날그날 컨디션·날씨 보고 선택. 매일 한두 개면 충분.</div>
+            <div class="pool-list">
+              <div class="pool-item">
+                <div class="pool-item-name">🐢 호텔 앞 거북이 스노클링</div>
+                <div class="pool-item-meta">언제든 · 아침이 가장 맑음 · 시그니처 액티비티</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">⛵ 3 길리 글래스보텀 보트 투어</div>
+                <div class="pool-item-meta">오후 4h · 거북이·수중동상 · 3세도 OK</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">🚲 자전거로 섬 일주</div>
+                <div class="pool-item-meta">2~3h · 북·서쪽 해변 탐험 · 아이 뒷자리</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">🌅 Sunset Point 일몰 + 해먹 그네</div>
+                <div class="pool-item-meta">17:30~ · 서쪽 해변 · 무료 명소</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">🐴 Cidomo 말마차 섬 한 바퀴</div>
+                <div class="pool-item-meta">30~40분 · 아이들이 좋아함 · 길리 시그니처</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">🏖️ 호텔 앞 해변 + 리조트 풀</div>
+                <div class="pool-item-meta">종일 옵션 · 아무것도 안 하는 날에 최고</div>
+              </div>
+              <div class="pool-item">
+                <div class="pool-item-name">🌃 Night Market 야시장</div>
+                <div class="pool-item-meta">저녁 · 사테·시푸드·나시고렝 · 가성비</div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="day-card island">
-          <div class="day-card-head"><div><span class="day-date">8.10<sup>일</sup></span></div><span class="day-tag confirmed">자유</span></div>
-          <div class="day-title">여유로운 섬 라이프</div>
-          <div class="timeline">
-            <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 앞 거북이 스노클링 또 (매일!)</div></div>
-            <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">Cidomo 말마차 / 비치 휴식</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Night Market</strong> 야시장 🌟</div></div>
+          <div class="pool-section">
+            <div class="pool-title"><span class="pool-icon">🍽️</span>식당 후보</div>
+            <div class="pool-desc">3일간 골고루. 기분 따라 하나씩.</div>
+
+            <div class="pool-meal-block">
+              <div class="pool-meal-label">🥐 조식</div>
+              <div class="pool-inline">Villa Almarik 리조트 조식 (기본)</div>
+            </div>
+
+            <div class="pool-meal-block">
+              <div class="pool-meal-label">🥗 점심·간식</div>
+              <div class="pool-inline">
+                <span class="pool-chip">Karma Kayak (수영하며)</span>
+                <span class="pool-chip">Pituq Cafe (건강식)</span>
+                <span class="pool-chip">호텔 캐주얼</span>
+              </div>
+            </div>
+
+            <div class="pool-meal-block">
+              <div class="pool-meal-label">🍤 저녁</div>
+              <div class="pool-inline">
+                <span class="pool-chip">Scallywags BBQ 시푸드</span>
+                <span class="pool-chip">Sendja @ Kardia 비치 디너</span>
+                <span class="pool-chip">Banyan Tree 캐주얼</span>
+                <span class="pool-chip">Night Market 야시장</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pool-tip">
+            <span class="pool-tip-icon">💡</span>
+            <span>일정을 촘촘히 짜기보다 <strong>매일 아침 그날 뭐 할지 정하는</strong> 느낌. 컨디션 나쁜 날은 리조트 안에서만.</span>
           </div>
         </div>
       </div>
@@ -768,7 +905,7 @@
             <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">우붓 시내 산책 + 아트마켓</div></div>
             <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Milk &amp; Madu 또는 Pizza Bagus</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text"><strong>몽키포레스트</strong> (3세 동생 부모 동행)</div><div class="timeline-note">먹을 것·반짝이 물건 가방 안에</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">Naughty Nuri's 폭립</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">후보: Naughty Nuri's 폭립 · Locavore to Go · Warung Biah Biah</div></div>
           </div>
         </div>
 
@@ -779,7 +916,7 @@
           <div class="timeline">
             <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">호텔 풀, 짧은 산책 또는 라이스테라스 (시간 되면)</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">사누르 이동, <strong>The 1O1 Sanur</strong> 체크인</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Soul on the Beach</strong> 모래밭 디너</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">후보: Soul on the Beach 모래밭 · Byrdhouse Beach Club · 호텔 근처 와룽</div></div>
           </div>
         </div>
       </div>
@@ -825,7 +962,7 @@
             <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">쿠타 이동, 서핑 레슨 (지난번 강사 컨택)</div></div>
             <div class="timeline-item"><div class="timeline-time">점심</div><div class="timeline-text">Beachwalk 쇼핑 + 점심</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">사누르 복귀, 호텔 풀</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Massimo</strong> 이탈리안 + 젤라토</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">후보: Massimo 이탈리안·젤라토 · Fisherman's Club · 호텔 풀사이드</div></div>
           </div>
         </div>
 
@@ -836,7 +973,7 @@
             <div class="timeline-item"><div class="timeline-time">05:30</div><div class="timeline-text">일출 (Karang Beach) + Daily Baguette 아침</div></div>
             <div class="timeline-item"><div class="timeline-time">오전</div><div class="timeline-text">8km 비치 프롬나드 자전거</div></div>
             <div class="timeline-item"><div class="timeline-time">오후</div><div class="timeline-text">호텔 풀, 비치 마사지</div></div>
-            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text"><strong>Sindhu Night Market</strong> 🌟</div></div>
+            <div class="timeline-item"><div class="timeline-time">저녁</div><div class="timeline-text">후보: Sindhu Night Market 🌟 · Tandjung Sari 클래식 발리 · Genius Cafe 비치프론트</div></div>
           </div>
         </div>
       </div>
@@ -1563,7 +1700,7 @@
 
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v0.9 · 2026.06
+    안전하고 즐거운 여행 되세요 · v1.0 · 2026.06
   </div>
 
 </div>

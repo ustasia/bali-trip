@@ -1,5 +1,5 @@
 // 발리 여행 가이드 Service Worker
-const CACHE_NAME = 'bali-guide-v9';
+const CACHE_NAME = 'bali-guide-v10';
 const ASSETS = [
   './',
   './index.html',
