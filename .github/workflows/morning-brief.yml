@@ -1,0 +1,31 @@
+name: Morning Brief
+
+on:
+  # KST 08:00 = UTC 23:00 (전날)
+  # cron 표기: 분 시 일 월 요일 (UTC 기준)
+  schedule:
+    - cron: '0 23 * * *'
+  # 수동 실행도 가능 (테스트용)
+  workflow_dispatch:
+
+jobs:
+  send-brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 표준 라이브러리만 씀 → 추가 pip install 불필요
+
+      - name: Send morning brief
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          RECIPIENTS: ${{ secrets.RECIPIENTS }}
+        run: python scripts/morning_brief.py
