@@ -2,16 +2,16 @@ name: Morning Brief
 
 on:
   # KST 08:00 = UTC 23:00 (전날)
-  # cron 표기: 분 시 일 월 요일 (UTC 기준)
   schedule:
     - cron: '0 23 * * *'
-  # 수동 실행도 가능 (테스트용)
   workflow_dispatch:
 
 jobs:
   send-brief:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write   # briefings/*.html 커밋용
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,11 +21,23 @@ jobs:
         with:
           python-version: '3.11'
 
-      # 표준 라이브러리만 씀 → 추가 pip install 불필요
-
       - name: Send morning brief
         env:
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           RECIPIENTS: ${{ secrets.RECIPIENTS }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python scripts/morning_brief.py
+
+      - name: Commit briefing HTML
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add briefings/ 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No new briefing to commit"
+          else
+            git commit -m "Add briefing $(TZ=Asia/Seoul date +%Y-%m-%d)"
+            git push
+          fi
