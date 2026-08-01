@@ -307,10 +307,11 @@ PRE_TRIP_STATUS = {
         "픽업 4건 (JohnTaxi)",
         "남부투어 사마사마 (DSLR 스냅)",
         "쿠타 서핑 Ryco 컨택",
+        "여행자보험 4인",
+        "Love Bali 관광세 (4인 · IDR 618k)",
     ],
     "pending": [
-        "e-VOA 신청 (도착 30일 전부터)",
-        "여행자보험 4인",
+        "e-VOA 신청 (evisa.imigrasi.go.id)",
         "사누르 → 공항 픽업 (8/17)",
     ],
 }
@@ -319,19 +320,37 @@ PRE_TRIP_STATUS = {
 # D-day별 리마인더 (해당 시점에만 표시)
 def d_day_reminders(days_left: int) -> list[str]:
     reminders = []
-    if days_left <= 30:
-        reminders.append("e-VOA 신청 가능 (도착 30일 전부터)")
+
+    # e-VOA (도착 60일 전~ 가능, 실용적으로 D-7~D-3에 처리)
+    if 3 <= days_left <= 7:
+        reminders.append("e-VOA 신청 (evisa.imigrasi.go.id · 4인 500k IDR 각)")
+    elif 7 < days_left <= 30:
+        reminders.append("e-VOA 신청 준비 (D-7 이내 처리)")
+
+    # 사누르 → 공항 픽업 (8/17 독립기념일)
     if days_left <= 14:
-        reminders.append("여행자보험 4인 비교·가입")
-        reminders.append("사누르 → 공항 픽업 (8/17) 예약")
+        reminders.append("사누르 → 공항 픽업 (8/17) 예약 (독립기념일 여유)")
+
+    # 일반 준비
     if days_left <= 7:
         reminders.append("환전 (일부 현금 IDR 확보)")
         reminders.append("여권 유효기간 확인 (귀국일 기준 6개월)")
         reminders.append("멀미약·지사제·아이 상비약")
+
+    # 베트남 PAI (호치민 입국, 72시간 전 가능)
     if days_left <= 3:
+        reminders.append("베트남 PAI 신청 (prearrival.immigration.gov.vn · 72시간 전)")
         reminders.append("짐 싸기 · 지퍼백 준비")
         reminders.append("Marriott Bonvoy 앱 · Agoda 앱 최신화")
+
+    # All Indonesia (발리 도착 2일 전부터)
+    if days_left <= 2:
+        reminders.append("All Indonesia 신고서 (allindonesia.imigrasi.go.id · 대표 1명)")
+
+    # 최종 확인
     if days_left <= 1:
         reminders.append("모든 예약 확인서 오프라인 저장")
         reminders.append("여권·항공권·현금 재확인")
+        reminders.append("QR코드 4종 (e-VOA·Love Bali·PAI·All Indonesia) 스크린샷")
+
     return reminders
