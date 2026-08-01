@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v1.1</title>
+<title>발리 가족 여행 · 2026.08 · v1.4</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.4.9/dist/web/static/pretendard.css" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -635,7 +635,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v1.1</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v1.4</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -1205,7 +1205,7 @@
     <div class="subpanel" id="sub-booked">
       <div class="daily-total-bar">
         <div class="daily-total-label">사전 결제 완료</div>
-        <div class="daily-total-num">₩4,373,517</div>
+        <div class="daily-total-num">₩4,395,819</div>
         <div class="daily-total-sub">항공 + 숙소 6건 (현금성)</div>
       </div>
 
@@ -1260,6 +1260,13 @@
           </div>
           <div class="rec-amount">211,500<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🛡️ 여행자보험 4인</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">마이뱅크 결제</div>
+          </div>
+          <div class="rec-amount">22,302<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
       </div>
 
       <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결제 예정</h3>
@@ -1280,10 +1287,17 @@
         </div>
         <div class="rec-row">
           <div>
-            <div class="rec-name">🛂 발리 비자·관광세</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">e-VOA + Love Bali · 4인</div>
+            <div class="rec-name">🎫 Love Bali 관광세 (완료 · IDR 청구)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">4인 · 카드 IDR 결제</div>
           </div>
-          <div class="rec-amount pending">~26만원</div>
+          <div class="rec-amount" style="color:#4a7c4a;">618,000<small style="font-size:9px;color:var(--ink-500);"> IDR ✓</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
+            <div class="rec-name">🛂 e-VOA 4인</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">500k IDR × 4 · 신청 예정</div>
+          </div>
+          <div class="rec-amount pending">~16만원</div>
         </div>
       </div>
     </div>
@@ -1302,7 +1316,7 @@
             <div class="rec-name">✅ 사전 결제 완료</div>
             <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">항공 + 숙소 6건</div>
           </div>
-          <div class="rec-amount">4,373,517<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount">4,395,819<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -1320,6 +1334,13 @@
         </div>
         <div class="rec-row">
           <div>
+            <div class="rec-name">🎫 Love Bali 관광세 (IDR 청구 ✓)</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">618,000 IDR 환산</div>
+          </div>
+          <div class="rec-amount" id="loveBaliKrw">~49,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+        </div>
+        <div class="rec-row">
+          <div>
             <div class="rec-name">🚗 픽업 4건 (계좌이체 예정)</div>
             <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">JohnTaxi · 8/6·7·11·13</div>
           </div>
@@ -1328,9 +1349,9 @@
         <div class="rec-row">
           <div>
             <div class="rec-name">📦 기타 예정</div>
-            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">비자·관광세 · 서핑 강습(150k IDR/h) 등</div>
+            <div style="font-size:11px;color:var(--ink-500);margin-top:2px;">e-VOA 4인 · 서핑 강습(150k IDR/h) 등</div>
           </div>
-          <div class="rec-amount">~260,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
+          <div class="rec-amount">~200,000<small style="font-size:9px;color:var(--ink-500);"> 원</small></div>
         </div>
         <div class="rec-row">
           <div>
@@ -1566,7 +1587,44 @@
       </div>
     </div>
 
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🛡️ 여행자보험 4인</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">22,302원</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제수단</span><span class="rec-meta-val">마이뱅크</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🎫 Love Bali 관광세 (4인)</div>
+          <div class="rec-meta-grid">
+            <div class="rec-meta-row"><span class="rec-meta-label">금액</span><span class="rec-meta-val">618,000 IDR</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">결제</span><span class="rec-meta-val">카드 IDR 청구</span></div>
+            <div class="rec-meta-row"><span class="rec-meta-label">QR</span><span class="rec-meta-val">이메일 수신 · 저장 필수</span></div>
+          </div>
+        </div>
+        <span class="rec-status confirmed">완료</span>
+      </div>
+    </div>
+
     <h3 style="font-family:'Pretendard',sans-serif;font-size:14px;color:var(--ocean-900);margin:18px 4px 8px;letter-spacing:1px;text-transform:uppercase;">결정·예약 대기</h3>
+
+    <div class="rec-table">
+      <div class="rec-row">
+        <div>
+          <div class="rec-name">🛂 e-VOA 4인</div>
+          <div style="font-size:11.5px;color:var(--ink-500);margin-top:6px;">이번 주말 신청 권장 · evisa.imigrasi.go.id · 500k IDR × 4</div>
+        </div>
+        <span class="rec-status pending">대기</span>
+      </div>
+    </div>
 
     <div class="rec-table">
       <div class="rec-row">
@@ -1642,7 +1700,7 @@
       <div class="checklist-title">🛂 출국 1주 전</div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">e-VOA 신청 (4인분)</div></div>
       <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">발리 관광세 사전결제 (Love Bali)</div></div>
-      <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">여행자보험 가입</div></div>
+      <div class="check-item done" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">여행자보험 가입</div></div>
       <div class="check-item done" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">웨스틴 우붓 객실 연박 메일 (8/11~13)</div></div>
       <div class="check-item done" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-text">1O1 사누르 객실 연박 메일 (8/13~17)</div></div>
     </div>
@@ -1783,7 +1841,7 @@
 
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v1.1 · 2026.06
+    안전하고 즐거운 여행 되세요 · v1.4 · 2026.06
   </div>
 
 </div>
@@ -2059,6 +2117,11 @@
       if (wahanaKrwEl) {
         const wahanaKrw = Math.round(3400000 * exchangeRate);
         wahanaKrwEl.innerHTML = `${formatNum(wahanaKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+      }
+      const loveBaliKrwEl = document.getElementById('loveBaliKrw');
+      if (loveBaliKrwEl) {
+        const loveBaliKrw = Math.round(618000 * exchangeRate);
+        loveBaliKrwEl.innerHTML = `${formatNum(loveBaliKrw)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
       }
       updatePreview();
     }
@@ -2401,6 +2464,11 @@
       const w = Math.round(3400000 * exchangeRate);
       wahanaKrwEl.innerHTML = `${formatNum(w)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     }
+    const loveBaliKrwEl = document.getElementById('loveBaliKrw');
+    if (loveBaliKrwEl) {
+      const w = Math.round(618000 * exchangeRate);
+      loveBaliKrwEl.innerHTML = `${formatNum(w)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
+    }
     const rateInfoEl = document.getElementById('totalRateInfo');
     if (rateInfoEl) rateInfoEl.textContent = `1 IDR = ${exchangeRate}원`;
   }
@@ -2509,12 +2577,13 @@
     const totalKRW = entries.reduce((s, e) => s + getEntryKRW(e), 0);
     document.getElementById('totalDailyAmount').innerHTML = `${formatNum(totalKRW)}<small style="font-size:9px;color:var(--ink-500);"> 원</small>`;
     document.getElementById('totalDailyMeta').textContent = entries.length > 0 ? `기록 ${entries.length}건` : '기록 없음';
-    const booked = 4373517;
+    const booked = 4395819;
     const westinUbud = Math.round(4598000 * exchangeRate);
     const wahanaFerry = Math.round(3400000 * exchangeRate);
+    const loveBali = Math.round(618000 * exchangeRate);
     const pickups = 104000;
-    const pendingEst = 260000; // 비자·관광세만 남음
-    const grand = booked + westinUbud + wahanaFerry + pickups + pendingEst + totalKRW;
+    const pendingEst = 200000; // e-VOA · 서핑 강습 등
+    const grand = booked + westinUbud + wahanaFerry + loveBali + pickups + pendingEst + totalKRW;
     document.getElementById('grandTotal').textContent = `₩${formatNum(grand)}`;
   }
 
