@@ -1,9 +1,10 @@
 name: Morning Brief
 
 on:
-  # KST 08:00 = UTC 23:00 (전날)
+  # KST 07:17 (UTC 22:17) — 정각 회피 + 지연 감안
+  # GitHub Actions cron은 정확한 시각 보장 없음, 실제 도착 KST 07:17~08:00 사이 예상
   schedule:
-    - cron: '0 23 * * *'
+    - cron: '17 22 * * *'
   workflow_dispatch:
 
 jobs:
