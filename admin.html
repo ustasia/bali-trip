@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bali Trip · 가계부 일괄 입력</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+  <style>
+    :root {
+      --ocean-900: #0f3a3e;
+      --ocean-700: #1c5a63;
+      --sand-50: #faf6ed;
+      --sand-100: #f4ebd5;
+      --sand-200: #e8dcbe;
+      --ink-900: #2d2823;
+      --ink-600: #6b6259;
+      --ink-400: #a39a8f;
+      --warning: #d97706;
+      --success: #059669;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Pretendard Variable', -apple-system, sans-serif;
+      background: var(--sand-50);
+      color: var(--ink-900);
+      padding: 20px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    header {
+      padding: 16px 0 12px;
+      border-bottom: 1px solid var(--sand-200);
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--ocean-900);
+      letter-spacing: -0.3px;
+    }
+    .subtitle {
+      font-size: 12px;
+      color: var(--ink-600);
+      margin-top: 4px;
+    }
+    .trip-info {
+      background: white;
+      border: 1px solid var(--sand-200);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--ink-900);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .trip-info.error { border-color: var(--danger); color: var(--danger); }
+    .trip-info code {
+      background: var(--sand-100);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--ocean-900);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--ink-400);
+    }
+    .status-dot.ready { background: var(--success); }
+    .status-dot.error { background: var(--danger); }
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--ink-900);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 260px;
+      padding: 14px;
+      border: 1px solid var(--sand-200);
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', 'Menlo', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--ink-900);
+      background: white;
+      resize: vertical;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--ocean-700);
+    }
+    .help-box {
+      background: var(--sand-100);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--ink-600);
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+    .help-box code {
+      background: white;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      color: var(--ocean-900);
+    }
+    .help-box details summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--ocean-900);
+      padding: 4px 0;
+    }
+    .help-box pre {
+      background: white;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 11px;
+      margin: 8px 0 0;
+    }
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary {
+      background: var(--ocean-900);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--ocean-700); }
+    .btn-primary:disabled {
+      background: var(--ink-400);
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: white;
+      color: var(--ink-900);
+      border: 1px solid var(--sand-200);
+    }
+    .btn-secondary:hover { background: var(--sand-100); }
+    .log {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: white;
+      border: 1px solid var(--sand-200);
+      border-radius: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--ink-900);
+      min-height: 40px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .log:empty::before {
+      content: '결과가 여기 표시됩니다.';
+      color: var(--ink-400);
+    }
+    .log-line.success { color: var(--success); }
+    .log-line.error { color: var(--danger); }
+    .log-line.info { color: var(--ink-600); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>가계부 일괄 입력</h1>
+    <div class="subtitle">JSON 배열을 붙여넣고 버튼 클릭 → Firebase에 저장</div>
+  </header>
+
+  <div class="trip-info" id="tripInfo">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">준비 중...</span>
+  </div>
+
+  <label for="jsonInput">지출 데이터 (JSON 배열)</label>
+  <textarea id="jsonInput" placeholder='[
+  {
+    "date": "2026-08-07",
+    "cat": "food",
+    "amount": 245000,
+    "currency": "IDR",
+    "memo": "Scallywags 저녁"
+  }
+]'></textarea>
+
+  <div class="help-box">
+    <details>
+      <summary>📖 사용법·필드 안내</summary>
+      <p style="margin: 8px 0 4px;"><b>필수 필드:</b></p>
+      <ul style="margin: 4px 0; padding-left: 18px;">
+        <li><code>date</code>: YYYY-MM-DD (예: "2026-08-07")</li>
+        <li><code>cat</code>: 카테고리 ID (아래 참고)</li>
+        <li><code>amount</code>: 숫자 (통화 단위, 예: 245000)</li>
+        <li><code>currency</code>: "IDR" 또는 "KRW"</li>
+      </ul>
+      <p style="margin: 8px 0 4px;"><b>선택 필드:</b></p>
+      <ul style="margin: 4px 0; padding-left: 18px;">
+        <li><code>memo</code>: 메모 (선택)</li>
+      </ul>
+      <p style="margin: 8px 0 4px;"><b>카테고리 ID:</b></p>
+      <ul style="margin: 4px 0; padding-left: 18px; font-size: 11.5px;">
+        <li><code>food</code> 🍽️ 식비</li>
+        <li><code>transit</code> 🚗 교통</li>
+        <li><code>activity</code> 🎢 액티비티</li>
+        <li><code>shopping</code> 🛍️ 쇼핑</li>
+        <li><code>spa</code> 💆 마사지</li>
+        <li><code>tip</code> 💵 팁</li>
+        <li><code>mart</code> 🛒 편의·약</li>
+        <li><code>etc</code> 📦 기타</li>
+      </ul>
+      <p style="margin: 8px 0 4px;"><b>예시:</b></p>
+      <pre>[
+  {"date":"2026-08-07","cat":"food","amount":245000,"currency":"IDR","memo":"Scallywags 저녁"},
+  {"date":"2026-08-07","cat":"transit","amount":14000,"currency":"KRW","memo":"사누르→스랑안 픽업"},
+  {"date":"2026-08-08","cat":"activity","amount":600000,"currency":"IDR","memo":"3길리 보트투어"}
+]</pre>
+    </details>
+  </div>
+
+  <div class="actions">
+    <button class="btn-secondary" id="validateBtn">✓ 유효성 검증만</button>
+    <button class="btn-primary" id="submitBtn" disabled>Firebase에 저장</button>
+  </div>
+
+  <div class="log" id="log"></div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+    import {
+      getFirestore, doc, setDoc, serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+    // === Firebase 초기화 (본 앱과 동일 프로젝트) ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyDas1Gf3-BRwjNgfcae-xEIZqiB-UFCins",
+      authDomain: "bali-trip-a17bc.firebaseapp.com",
+      projectId: "bali-trip-a17bc",
+      storageBucket: "bali-trip-a17bc.firebasestorage.app",
+      messagingSenderId: "964514029868",
+      appId: "1:964514029868:web:a641e89723b6cc68868c89"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // === 트립 코드 확인 (URL 파라미터) ===
+    const params = new URLSearchParams(location.search);
+    const tripCode = params.get('trip');
+
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const tripInfo = document.getElementById('tripInfo');
+    const submitBtn = document.getElementById('submitBtn');
+    const validateBtn = document.getElementById('validateBtn');
+    const jsonInput = document.getElementById('jsonInput');
+    const log = document.getElementById('log');
+
+    const VALID_CATS = ['food', 'transit', 'activity', 'shopping', 'spa', 'tip', 'mart', 'etc'];
+    const VALID_CURRENCIES = ['IDR', 'KRW'];
+
+    if (!tripCode || !/^[a-z0-9]{6,20}$/i.test(tripCode)) {
+      tripInfo.classList.add('error');
+      statusDot.classList.add('error');
+      statusText.innerHTML = 'URL에 트립 코드가 없어요. <br>예: <code>?trip=abc123...</code>';
+      submitBtn.disabled = true;
+      validateBtn.disabled = true;
+    } else {
+      statusDot.classList.add('ready');
+      statusText.innerHTML = `트립: <code>${tripCode}</code> · 준비 완료`;
+      submitBtn.disabled = false;
+    }
+
+    // === 로그 유틸 ===
+    function addLog(text, kind = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line ${kind}`;
+      line.textContent = text;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+    function clearLog() { log.innerHTML = ''; }
+
+    // === 유효성 검증 ===
+    function validate(entries) {
+      if (!Array.isArray(entries)) return { ok: false, error: 'JSON은 배열이어야 합니다 [ ... ]' };
+      if (entries.length === 0) return { ok: false, error: '빈 배열이에요.' };
+      for (let i = 0; i < entries.length; i++) {
+        const e = entries[i];
+        const idx = `[${i}]`;
+        if (typeof e !== 'object' || e === null) return { ok: false, error: `${idx} 객체가 아님` };
+        if (!e.date || !/^\d{4}-\d{2}-\d{2}$/.test(e.date)) return { ok: false, error: `${idx} date 형식 오류 (YYYY-MM-DD)` };
+        if (!e.cat || !VALID_CATS.includes(e.cat)) return { ok: false, error: `${idx} cat 유효하지 않음 (${VALID_CATS.join(', ')} 중 하나)` };
+        if (typeof e.amount !== 'number' || e.amount <= 0) return { ok: false, error: `${idx} amount는 양수여야 함` };
+        if (!e.currency || !VALID_CURRENCIES.includes(e.currency)) return { ok: false, error: `${idx} currency 유효하지 않음 (IDR/KRW)` };
+      }
+      return { ok: true };
+    }
+
+    // === 유효성 검증 버튼 ===
+    validateBtn.addEventListener('click', () => {
+      clearLog();
+      let entries;
+      try {
+        entries = JSON.parse(jsonInput.value);
+      } catch (e) {
+        addLog('❌ JSON 파싱 실패: ' + e.message, 'error');
+        return;
+      }
+      const check = validate(entries);
+      if (check.ok) {
+        addLog(`✅ 유효한 데이터: ${entries.length}건`, 'success');
+        entries.forEach((e, i) => {
+          addLog(`  ${i + 1}. ${e.date} · ${e.cat} · ${e.amount.toLocaleString()} ${e.currency}${e.memo ? ' · ' + e.memo : ''}`, 'info');
+        });
+      } else {
+        addLog('❌ ' + check.error, 'error');
+      }
+    });
+
+    // === 저장 버튼 ===
+    submitBtn.addEventListener('click', async () => {
+      clearLog();
+      let entries;
+      try {
+        entries = JSON.parse(jsonInput.value);
+      } catch (e) {
+        addLog('❌ JSON 파싱 실패: ' + e.message, 'error');
+        return;
+      }
+      const check = validate(entries);
+      if (!check.ok) {
+        addLog('❌ ' + check.error, 'error');
+        return;
+      }
+      if (!confirm(`${entries.length}건을 Firebase에 저장할까요?\n(트립: ${tripCode})`)) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '저장 중...';
+      addLog(`🚀 ${entries.length}건 저장 시작...`, 'info');
+
+      let successCount = 0;
+      let failCount = 0;
+
+      for (let i = 0; i < entries.length; i++) {
+        const e = entries[i];
+        // ID 생성 (밀리초 + 랜덤 3자리, 앱 규칙과 동일)
+        const id = String(Date.now()) + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+        const entry = {
+          id,
+          date: e.date,
+          cat: e.cat,
+          amount: e.amount,
+          currency: e.currency,
+          memo: e.memo || ''
+        };
+        try {
+          const ref = doc(db, 'trips', tripCode, 'entries', id);
+          await setDoc(ref, { ...entry, updatedAt: serverTimestamp() });
+          successCount++;
+          addLog(`  ✓ ${i + 1}. ${e.date} · ${e.amount.toLocaleString()} ${e.currency}${e.memo ? ' · ' + e.memo : ''}`, 'success');
+        } catch (err) {
+          failCount++;
+          addLog(`  ✗ ${i + 1}. 저장 실패: ${err.message}`, 'error');
+        }
+        // ID 중복 방지용 짧은 대기
+        await new Promise(r => setTimeout(r, 20));
+      }
+
+      addLog(`\n결과: 성공 ${successCount}건 / 실패 ${failCount}건`, successCount > 0 ? 'success' : 'error');
+      if (successCount > 0) {
+        addLog('앱을 열어보시면 반영되어 있어요.', 'info');
+        addLog('필요하면 입력한 JSON을 지우고 다음 배치 입력하세요.', 'info');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Firebase에 저장';
+    });
+  </script>
+</body>
+</html>

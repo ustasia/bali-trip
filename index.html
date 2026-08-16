@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#0f3a3e" />
-<title>발리 가족 여행 · 2026.08 · v1.4</title>
+<title>발리 가족 여행 · 2026.08 · v1.5</title>
 <!-- PWA -->
 <link rel="manifest" href="./manifest.json" />
 <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
@@ -14,7 +14,7 @@
 <meta name="mobile-web-app-capable" content="yes" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.4.9/dist/web/static/pretendard.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.5.9/dist/web/static/pretendard.css" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -465,8 +465,11 @@
   .day-detail-sum { font-family: 'Pretendard', sans-serif; font-size: 18px; color: var(--coral); font-weight: 600; }
   .day-detail-empty { text-align: center; padding: 20px 0; color: var(--ink-500); font-size: 13px; }
 
-  .entry-row { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sand-100); align-items: center; }
+  .entry-row { display: grid; grid-template-columns: auto 1fr auto auto auto; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--sand-100); align-items: center; }
   .entry-row:last-child { border-bottom: none; }
+  .entry-edit { background: none; border: none; color: var(--ocean-700); font-size: 15px; cursor: pointer; padding: 4px 6px; opacity: 0.5; transition: opacity 0.15s; }
+  .entry-edit:hover { opacity: 1; }
+  .entry-edit:active { transform: scale(0.9); }
   .entry-cat { width: 28px; height: 28px; border-radius: 8px; background: var(--sand-100); display: flex; align-items: center; justify-content: center; font-size: 14px; }
   .entry-text { font-size: 13px; color: var(--ink-900); line-height: 1.3; min-width: 0; }
   .entry-text small { color: var(--ink-500); font-size: 10px; display: block; margin-top: 2px; }
@@ -477,6 +480,28 @@
   /* Input card */
   .input-card { background: white; border-radius: 18px; padding: 18px; margin-bottom: 16px; border: 1px solid var(--sand-200); }
   .input-card-title { font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 600; color: var(--ocean-900); margin-bottom: 12px; }
+  .input-card.editing { border: 2px solid var(--gold); background: linear-gradient(180deg, rgba(212,165,116,0.06), transparent); }
+  .edit-badge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgba(212,165,116,0.15), rgba(232,93,79,0.08));
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  .edit-badge-text { font-size: 13px; color: var(--ocean-900); font-weight: 600; }
+  .edit-badge-cancel {
+    background: white;
+    border: 1px solid var(--sand-200);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: var(--ink-700);
+    cursor: pointer;
+  }
+  .edit-badge-cancel:active { background: var(--sand-100); }
   .input-section { margin-bottom: 12px; }
   .input-section:last-child { margin-bottom: 0; }
   .input-label { font-size: 10px; color: var(--ink-500); letter-spacing: 1px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
@@ -635,7 +660,7 @@
 <div class="container">
 
   <header class="hero">
-    <div class="hero-meta">2026 · 08 · Family Trip · v1.4</div>
+    <div class="hero-meta">2026 · 08 · Family Trip · v1.5</div>
     <h1 class="hero-title">Bali <em>&amp;</em><br>Gili Trawangan</h1>
     <p class="hero-sub">호치민 경유 · 발리 11박 12일 · 가족 여행</p>
     <div class="hero-stats">
@@ -1168,8 +1193,13 @@
       </div>
 
       <!-- 입력 카드 -->
-      <div class="input-card">
-        <div class="input-card-title">+ 새 기록 추가</div>
+      <div class="input-card" id="inputCard">
+        <div class="input-card-title" id="inputCardTitle">+ 새 기록 추가</div>
+
+        <div class="edit-badge" id="editBadge" style="display:none;">
+          <span class="edit-badge-text">✎ 수정 중</span>
+          <button class="edit-badge-cancel" onclick="cancelEdit()">취소</button>
+        </div>
 
         <div class="input-section">
           <div class="input-label">카테고리</div>
@@ -1841,7 +1871,7 @@
 
   <div class="footer-note">
     <em>Selamat jalan</em>
-    안전하고 즐거운 여행 되세요 · v1.4 · 2026.06
+    안전하고 즐거운 여행 되세요 · v1.5 · 2026.06
   </div>
 
 </div>
@@ -1888,6 +1918,7 @@
   // === STATE ===
   let exchangeRate = 0.08;
   let entries = [];
+  let editingId = null;
   let favorites = new Set();
   let selectedCat = null;
   let selectedCur = 'IDR';
@@ -2193,7 +2224,30 @@
     const amt = parseFloat(document.getElementById('amountInput').value) || 0;
     if (!selectedCat || amt <= 0) return;
     const memo = document.getElementById('memoInput').value.trim();
-    // 고유 ID (Firestore doc ID 로도 사용) — 밀리초 + 3자리 랜덤
+
+    if (editingId !== null) {
+      // === 편집 모드 ===
+      const idx = entries.findIndex(x => x.id === editingId);
+      if (idx >= 0) {
+        entries[idx] = {
+          ...entries[idx],
+          date: selectedDay,
+          cat: selectedCat,
+          amount: amt,
+          currency: selectedCur,
+          memo
+        };
+        saveDataLocal();
+        if (fbReady && tripCode) {
+          saveEntryToFirestore(entries[idx]);
+        }
+        renderDaily();
+      }
+      cancelEdit();
+      return;
+    }
+
+    // === 새 항목 추가 ===
     const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
     const entry = {
       id: id,
@@ -2205,18 +2259,70 @@
     };
     entries.push(entry);
     saveDataLocal();
-    // Firestore 저장 (실시간 리스너가 다른 폰에 전파)
     if (fbReady && tripCode) {
       saveEntryToFirestore(entry);
     }
     renderDaily();
+    resetInputForm();
+  }
+
+  function startEdit(id) {
+    const e = entries.find(x => x.id === id);
+    if (!e) return;
+    editingId = e.id;
+
+    // 날짜 선택 이동
+    selectedDay = e.date;
+
+    // 카테고리 선택
+    selectedCat = e.cat;
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.cat === e.cat);
+    });
+
+    // 통화·금액·메모
+    selectedCur = e.currency;
+    document.querySelectorAll('.currency-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.cur === e.currency);
+    });
+    document.getElementById('amountInput').value = e.amount;
+    document.getElementById('memoInput').value = e.memo || '';
+    updatePreview();
+
+    // 편집 모드 UI
+    document.getElementById('editBadge').style.display = 'flex';
+    document.getElementById('inputCard').classList.add('editing');
+    document.getElementById('inputCardTitle').textContent = '✎ 기록 수정';
+    document.getElementById('addBtn').textContent = '수정 완료';
+
+    // 폼으로 스크롤
+    setTimeout(() => {
+      document.getElementById('inputCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
+    // 일별 화면 갱신 (선택한 날짜로 이동한 걸 반영)
+    renderDaily();
+  }
+
+  function cancelEdit() {
+    editingId = null;
+    document.getElementById('editBadge').style.display = 'none';
+    document.getElementById('inputCard').classList.remove('editing');
+    document.getElementById('inputCardTitle').textContent = '+ 새 기록 추가';
+    document.getElementById('addBtn').textContent = '선택한 날짜에 추가';
+    resetInputForm();
+  }
+
+  function resetInputForm() {
     document.getElementById('amountInput').value = '';
     document.getElementById('memoInput').value = '';
     selectedCat = null;
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
     updatePreview();
   }
+
   function deleteEntry(id) {
+    if (editingId === id) cancelEdit();
     if (!confirm('이 기록을 삭제할까요?')) return;
     entries = entries.filter(e => e.id !== id);
     saveDataLocal();
@@ -2535,7 +2641,8 @@
               ${e.currency === 'IDR' ? `<small>${formatNum(e.amount)} IDR 환산</small>` : ''}
             </div>
             <div class="entry-amount">₩${formatNum(krw)}</div>
-            <button class="entry-del" onclick="deleteEntry(${e.id})">✕</button>
+            <button class="entry-edit" onclick="startEdit(${e.id})" title="수정">✎</button>
+            <button class="entry-del" onclick="deleteEntry(${e.id})" title="삭제">✕</button>
           </div>
         `;
       }).join('');
