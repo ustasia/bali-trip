@@ -82,6 +82,70 @@
     .day-move-badge { background: var(--coral); color: white; font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600; letter-spacing: 0.5px; }
     .day-body { padding: 14px 16px; }
 
+    /* === PHOTO SLIDER === */
+    .photo-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      gap: 8px;
+      margin: 0 -16px 12px;
+      padding: 0 16px 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .photo-slider::-webkit-scrollbar { display: none; }
+    .photo-slide {
+      flex: 0 0 88%;
+      scroll-snap-align: center;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: var(--sand-100);
+      aspect-ratio: 4/3;
+    }
+    .photo-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-slide-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.7));
+      color: white;
+      padding: 20px 12px 10px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .photo-count-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15,58,62,0.9);
+      color: white;
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .photo-album-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--ocean-700);
+      text-decoration: none;
+      padding: 6px 10px;
+      background: var(--sand-100);
+      border-radius: 8px;
+      margin-top: 8px;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    .photo-album-link:hover { background: var(--sand-200); }
+
     .timeline { display: grid; gap: 8px; }
     .timeline-item { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: baseline; font-size: 13px; line-height: 1.55; }
     .timeline-time { font-family: 'JetBrains Mono', 'Menlo', monospace; font-size: 11.5px; color: var(--ocean-700); font-weight: 600; padding-top: 1px; }
@@ -112,6 +176,22 @@
     .expense-cat-sub { font-size: 10px; color: var(--ink-500); margin-top: 2px; }
 
     .footer { text-align: center; color: var(--ink-400); font-size: 11px; padding: 30px 20px 20px; letter-spacing: 0.5px; }
+
+    .album-cta {
+      background: linear-gradient(135deg, var(--gold), #b8895a);
+      color: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin: 20px 16px 0;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.15s;
+    }
+    .album-cta:active { transform: scale(0.98); }
+    .album-cta-icon { font-size: 24px; margin-bottom: 6px; }
+    .album-cta-title { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .album-cta-sub { font-size: 11.5px; opacity: 0.85; }
   </style>
 </head>
 <body>
@@ -155,7 +235,13 @@
     <div class="expense-cats" id="expenseCats"></div>
   </main>
 
-  <div class="footer">© 2026 발리 여행 정리 · v0.1</div>
+  <a href="#" id="tripAlbumLink" class="album-cta" target="_blank" rel="noopener" style="display:none;">
+    <div class="album-cta-icon">📸</div>
+    <div class="album-cta-title">발리 여행 전체 사진첩</div>
+    <div class="album-cta-sub">Google Photos 앨범에서 원본 보기</div>
+  </a>
+
+  <div class="footer">© 2026 발리 여행 정리 · v0.2</div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
@@ -178,8 +264,12 @@
     const params = new URLSearchParams(location.search);
     const tripCode = params.get('trip');
 
+    // === Google Photos 전체 앨범 URL ===
+    // 앨범 만들고 공유 링크 붙여넣기 (없으면 상단 CTA 안 보임)
+    const TRIP_ALBUM_URL = '';  // 예: 'https://photos.app.goo.gl/xxxxxxxxxxxx'
+
     const tripLog = [
-      { num: 1, date: '2026-08-05', wk: '수', region: '호치민', title: '인천 → 호치민', move: true, timeline: [
+      { num: 1, date: '2026-08-05', wk: '수', region: '호치민', title: '인천 → 호치민', move: true, photos: [], timeline: [
         { t: '06:40', text: '집에서 출발' },
         { t: '07:50', text: '인천공항 도착' },
         { t: '14:00', text: '호치민 탄손낫 공항 도착', hi: true },
@@ -192,7 +282,7 @@
         { t: '20:20-20:45', text: '그랩택시 → 숙소' },
         { t: '21:30', text: '취침', meta: true },
       ]},
-      { num: 2, date: '2026-08-06', wk: '목', region: '호치민→발리', title: '호치민 → 사누르', move: true, timeline: [
+      { num: 2, date: '2026-08-06', wk: '목', region: '호치민→발리', title: '호치민 → 사누르', move: true, photos: [], timeline: [
         { t: '08:00-08:40', text: '공항 이동 · 반미샌드위치·카페쓰어다 아침' },
         { t: '15:00', text: '발리 덴파사르 공항 도착', hi: true },
         { t: '15:20', text: '공항 ATM 250만 루피아 (약 20만원)', meta: true },
@@ -203,7 +293,7 @@
         { t: '20:50', text: 'ATM 400만 루피아 (약 31만원) 인출', meta: true },
         { t: '22:35', text: '취침', meta: true },
       ]},
-      { num: 3, date: '2026-08-07', wk: '금', region: '사누르→길리', title: '와하나 배편으로 길리 이동', move: true, timeline: [
+      { num: 3, date: '2026-08-07', wk: '금', region: '사누르→길리', title: '와하나 배편으로 길리 이동', move: true, photos: [], timeline: [
         { t: '06:30', text: '기상' },
         { t: '07:05', text: '스랑안 항구로 출발 (조식 테이크아웃)' },
         { t: '07:30-08:30', text: '배 기다리며 테이크아웃 조식' },
@@ -219,7 +309,7 @@
         { t: '21:25-22:25', text: '길리스파 발마사지' },
         { t: '23:20', text: '취침', meta: true },
       ]},
-      { num: 4, date: '2026-08-08', wk: '토', region: '길리', title: '길리 · 전기스쿠터 데이', timeline: [
+      { num: 4, date: '2026-08-08', wk: '토', region: '길리', title: '길리 · 전기스쿠터 데이', photos: [], timeline: [
         { t: '09:00', text: '기상' },
         { t: '09:40-10:40', text: '늦은 조식' },
         { t: '13:00-14:30', text: '풀장수영' },
@@ -231,7 +321,7 @@
         { t: '21:50-23:00', text: '스쿠터 타고 반바퀴 또 돌기' },
         { t: '24:00', text: '취침', meta: true },
       ]},
-      { num: 5, date: '2026-08-09', wk: '일', region: '길리', title: '길리 · 거북이 스노클링', timeline: [
+      { num: 5, date: '2026-08-09', wk: '일', region: '길리', title: '길리 · 거북이 스노클링', photos: [], timeline: [
         { t: '09:30-10:40', text: '늦은 조식' },
         { t: '11:45-14:45', text: '바다거북 보러 해변수영 · 수영장', hi: true },
         { t: '14:50', text: '스쿠터 하루 반일 더 대여', meta: true },
@@ -245,7 +335,7 @@
         { t: '23:05', text: '지오·시우 취침', meta: true },
         { t: '01:00', text: '정우·보아 취침', meta: true },
       ]},
-      { num: 6, date: '2026-08-10', wk: '월', region: '길리', title: '길리 마지막 날 · 옴박선셋', timeline: [
+      { num: 6, date: '2026-08-10', wk: '월', region: '길리', title: '길리 마지막 날 · 옴박선셋', photos: [], timeline: [
         { t: '09:30-10:30', text: '늦은 조식' },
         { t: '11:50-14:10', text: '바다거북 해변수영 · 수영장' },
         { t: '14:30', text: '와룽샨두 늦은점심 · 미고랭·아얌바카르·이가바카르·나시테루가불' },
@@ -259,7 +349,7 @@
         { t: '22:45', text: '마지막 밤 해변 파도소리 🌊', hi: true },
         { t: '24:00', text: '취침', meta: true },
       ]},
-      { num: 7, date: '2026-08-11', wk: '화', region: '길리→우붓', title: '길리 → 우붓 (Westin)', move: true, timeline: [
+      { num: 7, date: '2026-08-11', wk: '화', region: '길리→우붓', title: '길리 → 우붓 (Westin)', move: true, photos: [], timeline: [
         { t: '08:45-09:25', text: '조식' },
         { t: '09:30', text: '마차타고 항구로 · 와하나 오피스 · 환전', meta: true },
         { t: '11:00', text: '와하나 배 출발 (10시 예정에서 지연)' },
@@ -272,7 +362,7 @@
         { t: '19:50', text: '배달음식 저녁식사' },
         { t: '22:30', text: '보아 기절', meta: true },
       ]},
-      { num: 8, date: '2026-08-12', wk: '수', region: '우붓', title: '몽키포레스트 · 쇼핑 데이', timeline: [
+      { num: 8, date: '2026-08-12', wk: '수', region: '우붓', title: '몽키포레스트 · 쇼핑 데이', photos: [], timeline: [
         { t: '09:25-10:50', text: '느지막한 조식' },
         { t: '11:40', text: '그랩택시로 몽키포레스트' },
         { t: '12:25-13:45', text: '몽키포레스트 🐒', hi: true },
@@ -284,7 +374,7 @@
         { t: '21:20-21:50', text: '룸서비스·컵밥 저녁', meta: true },
         { t: '22:30', text: '취침', meta: true },
       ]},
-      { num: 9, date: '2026-08-13', wk: '목', region: '우붓→사누르', title: '우붓 마지막 · 사누르 이동', move: true, timeline: [
+      { num: 9, date: '2026-08-13', wk: '목', region: '우붓→사누르', title: '우붓 마지막 · 사누르 이동', move: true, photos: [], timeline: [
         { t: '09:10-10:30', text: '조식' },
         { t: '11:50', text: '키즈클럽 둘러보고 수영장으로' },
         { t: '12:00-16:25', text: '수영장' },
@@ -296,7 +386,7 @@
         { t: '21:10-21:40', text: '까랑해변 · 숙소 주변 산책' },
         { t: '22:40', text: '취침', meta: true },
       ]},
-      { num: 10, date: '2026-08-14', wk: '금', region: '사누르', title: '남부투어 (Pandawa·Uluwatu·Jimbaran)', timeline: [
+      { num: 10, date: '2026-08-14', wk: '금', region: '사누르', title: '남부투어 (Pandawa·Uluwatu·Jimbaran)', photos: [], timeline: [
         { t: '08:50-09:50', text: '조식' },
         { t: '10:15', text: '남부투어 택시 출발' },
         { t: '11:10', text: '판다와 비치 도착' },
@@ -309,7 +399,7 @@
         { t: '21:55', text: '숙소 도착' },
         { t: '23:00', text: '취침', meta: true },
       ]},
-      { num: 11, date: '2026-08-15', wk: '토', region: '사누르', title: '쿠타 서핑 데이 🏄', timeline: [
+      { num: 11, date: '2026-08-15', wk: '토', region: '사누르', title: '쿠타 서핑 데이 🏄', photos: [], timeline: [
         { t: '09:35-10:40', text: '조식' },
         { t: '12:00-14:20', text: '수영장 · 풀사이드바 점심' },
         { t: '15:00', text: '그랩택시 쿠타 출발' },
@@ -319,7 +409,7 @@
         { t: '21:00-22:05', text: '모짜사누르 파스타 늦은저녁' },
         { t: '23:00', text: '취침', meta: true },
       ]},
-      { num: 12, date: '2026-08-16', wk: '일', region: '사누르', title: '사누르 마지막 · 자전거 데이', timeline: [
+      { num: 12, date: '2026-08-16', wk: '일', region: '사누르', title: '사누르 마지막 · 자전거 데이', photos: [], timeline: [
         { t: '09:40-10:40', text: '조식' },
         { t: '11:30', text: '자전거 빌려서 외출 🚲', hi: true },
         { t: '12:00', text: '아이콘발리 도착' },
@@ -335,7 +425,7 @@
         { t: '21:30-22:00', text: '숙소 옆 마트 쇼핑' },
         { t: '23:50', text: '취침', meta: true },
       ]},
-      { num: 13, date: '2026-08-17', wk: '월', region: '귀국', title: '사누르 → 호치민 → 인천', move: true, timeline: [
+      { num: 13, date: '2026-08-17', wk: '월', region: '귀국', title: '사누르 → 호치민 → 인천', move: true, photos: [], timeline: [
         { t: '09:30-10:30', text: '조식' },
         { t: '11:00-12:00', text: '독립기념일 이벤트 🇮🇩', hi: true },
         { t: '11:30', text: '자전거 반납' },
@@ -388,6 +478,28 @@
           <div class="timeline-text">${item.text}</div>
         </div>
       `).join('');
+
+      // 사진 슬라이더
+      const hasPhotos = day.photos && day.photos.length > 0;
+      const sliderHtml = hasPhotos ? `
+        <div class="photo-count-badge">📷 ${day.photos.length}장</div>
+        <div class="photo-slider">
+          ${day.photos.map(p => `
+            <div class="photo-slide">
+              <img src="${p.src}" alt="${p.caption || ''}" loading="lazy">
+              ${p.caption ? `<div class="photo-slide-caption">${p.caption}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      // 이 날의 앨범 링크 (선택)
+      const albumLink = day.photoAlbum ? `
+        <a href="${day.photoAlbum}" target="_blank" rel="noopener" class="photo-album-link">
+          🖼️ 이 날 사진 전체 보기
+        </a>
+      ` : '';
+
       return `
         <div class="day-card" data-date="${day.date}">
           <div class="day-head">
@@ -397,7 +509,9 @@
             ${day.move ? '<span class="day-move-badge">이동</span>' : ''}
           </div>
           <div class="day-body">
+            ${sliderHtml}
             <div class="timeline">${tl}</div>
+            ${albumLink}
             <div class="day-spend" data-date-spend="${day.date}" style="display:none;">
               <div class="day-spend-label">💰 이 날 지출</div>
               <div class="day-spend-num">-</div>
@@ -516,6 +630,13 @@
     renderDays();
     renderHighlights();
     loadExpense();
+
+    // Google Photos 앨범 링크 활성화
+    if (TRIP_ALBUM_URL) {
+      const link = document.getElementById('tripAlbumLink');
+      link.href = TRIP_ALBUM_URL;
+      link.style.display = 'block';
+    }
   </script>
 </body>
 </html>
