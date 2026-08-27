@@ -241,7 +241,7 @@
     <div class="album-cta-sub">Google Photos 앨범에서 원본 보기</div>
   </a>
 
-  <div class="footer">© 2026 발리 여행 정리 · v0.2</div>
+  <div class="footer">© 2026 발리 여행 정리 · v0.3</div>
 
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
@@ -269,7 +269,7 @@
     const TRIP_ALBUM_URL = '';  // 예: 'https://photos.app.goo.gl/xxxxxxxxxxxx'
 
     const tripLog = [
-      { num: 1, date: '2026-08-05', wk: '수', region: '호치민', title: '인천 → 호치민', move: true, photos: [], timeline: [
+      { num: 1, date: '2026-08-05', wk: '수', region: '호치민', title: '인천 → 호치민', move: true, photos: [{ src: 'photos/day01.jpg', caption: '호치민 시티투어버스 · 첫날 야경' }], timeline: [
         { t: '06:40', text: '집에서 출발' },
         { t: '07:50', text: '인천공항 도착' },
         { t: '14:00', text: '호치민 탄손낫 공항 도착', hi: true },
@@ -282,7 +282,7 @@
         { t: '20:20-20:45', text: '그랩택시 → 숙소' },
         { t: '21:30', text: '취침', meta: true },
       ]},
-      { num: 2, date: '2026-08-06', wk: '목', region: '호치민→발리', title: '호치민 → 사누르', move: true, photos: [], timeline: [
+      { num: 2, date: '2026-08-06', wk: '목', region: '호치민→발리', title: '호치민 → 사누르', move: true, photos: [{ src: 'photos/day02.jpg', caption: '사누르 지니어스 카페 · 해변 저녁' }], timeline: [
         { t: '08:00-08:40', text: '공항 이동 · 반미샌드위치·카페쓰어다 아침' },
         { t: '15:00', text: '발리 덴파사르 공항 도착', hi: true },
         { t: '15:20', text: '공항 ATM 250만 루피아 (약 20만원)', meta: true },
@@ -293,7 +293,7 @@
         { t: '20:50', text: 'ATM 400만 루피아 (약 31만원) 인출', meta: true },
         { t: '22:35', text: '취침', meta: true },
       ]},
-      { num: 3, date: '2026-08-07', wk: '금', region: '사누르→길리', title: '와하나 배편으로 길리 이동', move: true, photos: [], timeline: [
+      { num: 3, date: '2026-08-07', wk: '금', region: '사누르→길리', title: '와하나 배편으로 길리 이동', move: true, photos: [{ src: 'photos/day03.jpg', caption: 'Villa Almarik 도착 · 길리 첫날' }], timeline: [
         { t: '06:30', text: '기상' },
         { t: '07:05', text: '스랑안 항구로 출발 (조식 테이크아웃)' },
         { t: '07:30-08:30', text: '배 기다리며 테이크아웃 조식' },
@@ -309,7 +309,7 @@
         { t: '21:25-22:25', text: '길리스파 발마사지' },
         { t: '23:20', text: '취침', meta: true },
       ]},
-      { num: 4, date: '2026-08-08', wk: '토', region: '길리', title: '길리 · 전기스쿠터 데이', photos: [], timeline: [
+      { num: 4, date: '2026-08-08', wk: '토', region: '길리', title: '길리 · 전기스쿠터 데이', photos: [{ src: 'photos/day04.jpg', caption: '전기스쿠터 · 터틀포인트' }], timeline: [
         { t: '09:00', text: '기상' },
         { t: '09:40-10:40', text: '늦은 조식' },
         { t: '13:00-14:30', text: '풀장수영' },
@@ -321,7 +321,7 @@
         { t: '21:50-23:00', text: '스쿠터 타고 반바퀴 또 돌기' },
         { t: '24:00', text: '취침', meta: true },
       ]},
-      { num: 5, date: '2026-08-09', wk: '일', region: '길리', title: '길리 · 거북이 스노클링', photos: [], timeline: [
+      { num: 5, date: '2026-08-09', wk: '일', region: '길리', title: '길리 · 거북이 스노클링', photos: [{ src: 'photos/day05.jpg', caption: '바다거북 스노클링' }], timeline: [
         { t: '09:30-10:40', text: '늦은 조식' },
         { t: '11:45-14:45', text: '바다거북 보러 해변수영 · 수영장', hi: true },
         { t: '14:50', text: '스쿠터 하루 반일 더 대여', meta: true },
@@ -335,7 +335,7 @@
         { t: '23:05', text: '지오·시우 취침', meta: true },
         { t: '01:00', text: '정우·보아 취침', meta: true },
       ]},
-      { num: 6, date: '2026-08-10', wk: '월', region: '길리', title: '길리 마지막 날 · 옴박선셋', photos: [], timeline: [
+      { num: 6, date: '2026-08-10', wk: '월', region: '길리', title: '길리 마지막 날 · 옴박선셋', photos: [{ src: 'photos/day06-01.jpg', caption: '옴박선셋 그네 인생샷' }, { src: 'photos/day06-02.jpg', caption: '길리 마지막 밤 해변' }], timeline: [
         { t: '09:30-10:30', text: '늦은 조식' },
         { t: '11:50-14:10', text: '바다거북 해변수영 · 수영장' },
         { t: '14:30', text: '와룽샨두 늦은점심 · 미고랭·아얌바카르·이가바카르·나시테루가불' },
@@ -349,7 +349,7 @@
         { t: '22:45', text: '마지막 밤 해변 파도소리 🌊', hi: true },
         { t: '24:00', text: '취침', meta: true },
       ]},
-      { num: 7, date: '2026-08-11', wk: '화', region: '길리→우붓', title: '길리 → 우붓 (Westin)', move: true, photos: [], timeline: [
+      { num: 7, date: '2026-08-11', wk: '화', region: '길리→우붓', title: '길리 → 우붓 (Westin)', move: true, photos: [{ src: 'photos/day07.jpg', caption: 'Westin 우붓 · 드디어 숙소!!' }], timeline: [
         { t: '08:45-09:25', text: '조식' },
         { t: '09:30', text: '마차타고 항구로 · 와하나 오피스 · 환전', meta: true },
         { t: '11:00', text: '와하나 배 출발 (10시 예정에서 지연)' },
@@ -362,7 +362,7 @@
         { t: '19:50', text: '배달음식 저녁식사' },
         { t: '22:30', text: '보아 기절', meta: true },
       ]},
-      { num: 8, date: '2026-08-12', wk: '수', region: '우붓', title: '몽키포레스트 · 쇼핑 데이', photos: [], timeline: [
+      { num: 8, date: '2026-08-12', wk: '수', region: '우붓', title: '몽키포레스트 · 쇼핑 데이', photos: [{ src: 'photos/day08-01.jpg', caption: '몽키포레스트' }, { src: 'photos/day08-02.jpg', caption: '티켓투더문 쇼핑' }, { src: 'photos/day08-03.jpg', caption: '세미냐난 커피 · 원두 구매' }], timeline: [
         { t: '09:25-10:50', text: '느지막한 조식' },
         { t: '11:40', text: '그랩택시로 몽키포레스트' },
         { t: '12:25-13:45', text: '몽키포레스트 🐒', hi: true },
@@ -374,7 +374,7 @@
         { t: '21:20-21:50', text: '룸서비스·컵밥 저녁', meta: true },
         { t: '22:30', text: '취침', meta: true },
       ]},
-      { num: 9, date: '2026-08-13', wk: '목', region: '우붓→사누르', title: '우붓 마지막 · 사누르 이동', move: true, photos: [], timeline: [
+      { num: 9, date: '2026-08-13', wk: '목', region: '우붓→사누르', title: '우붓 마지막 · 사누르 이동', move: true, photos: [{ src: 'photos/day09.jpg', caption: '차낭사리 만들기 · 사누르 이동' }], timeline: [
         { t: '09:10-10:30', text: '조식' },
         { t: '11:50', text: '키즈클럽 둘러보고 수영장으로' },
         { t: '12:00-16:25', text: '수영장' },
@@ -386,7 +386,7 @@
         { t: '21:10-21:40', text: '까랑해변 · 숙소 주변 산책' },
         { t: '22:40', text: '취침', meta: true },
       ]},
-      { num: 10, date: '2026-08-14', wk: '금', region: '사누르', title: '남부투어 (Pandawa·Uluwatu·Jimbaran)', photos: [], timeline: [
+      { num: 10, date: '2026-08-14', wk: '금', region: '사누르', title: '남부투어 (Pandawa·Uluwatu·Jimbaran)', photos: [{ src: 'photos/day10-1.jpg', caption: '판다와 비치 · 버기카' }, { src: 'photos/day10-2.jpg', caption: '와룽 두선 점심' }, { src: 'photos/day10-3.jpg', caption: '울루와뚜 사원' }, { src: 'photos/day10-4.jpg', caption: '빠당빠당 비치 바다수영' }, { src: 'photos/day10-5.jpg', caption: '짐바란 테피판타이 씨푸드' }], timeline: [
         { t: '08:50-09:50', text: '조식' },
         { t: '10:15', text: '남부투어 택시 출발' },
         { t: '11:10', text: '판다와 비치 도착' },
@@ -399,7 +399,7 @@
         { t: '21:55', text: '숙소 도착' },
         { t: '23:00', text: '취침', meta: true },
       ]},
-      { num: 11, date: '2026-08-15', wk: '토', region: '사누르', title: '쿠타 서핑 데이 🏄', photos: [], timeline: [
+      { num: 11, date: '2026-08-15', wk: '토', region: '사누르', title: '쿠타 서핑 데이 🏄', photos: [{ src: 'photos/day11-1.jpg', caption: '사누르 수영장 · 풀사이드바' }, { src: 'photos/day11-2.jpg', caption: '쿠타 리코서핑 강습' }, { src: 'photos/day11-3.jpg', caption: '쿠타 선셋' }, { src: 'photos/day11-4.jpg', caption: '모짜 사누르 파스타' }], timeline: [
         { t: '09:35-10:40', text: '조식' },
         { t: '12:00-14:20', text: '수영장 · 풀사이드바 점심' },
         { t: '15:00', text: '그랩택시 쿠타 출발' },
@@ -409,7 +409,7 @@
         { t: '21:00-22:05', text: '모짜사누르 파스타 늦은저녁' },
         { t: '23:00', text: '취침', meta: true },
       ]},
-      { num: 12, date: '2026-08-16', wk: '일', region: '사누르', title: '사누르 마지막 · 자전거 데이', photos: [], timeline: [
+      { num: 12, date: '2026-08-16', wk: '일', region: '사누르', title: '사누르 마지막 · 자전거 데이', photos: [{ src: 'photos/day12-1.jpg', caption: '자전거로 아이콘 발리' }, { src: 'photos/day12-2.jpg', caption: '마시모 젤라또' }, { src: 'photos/day12-3.jpg', caption: '아레나 리빙 스테이크 저녁' }], timeline: [
         { t: '09:40-10:40', text: '조식' },
         { t: '11:30', text: '자전거 빌려서 외출 🚲', hi: true },
         { t: '12:00', text: '아이콘발리 도착' },
@@ -425,7 +425,7 @@
         { t: '21:30-22:00', text: '숙소 옆 마트 쇼핑' },
         { t: '23:50', text: '취침', meta: true },
       ]},
-      { num: 13, date: '2026-08-17', wk: '월', region: '귀국', title: '사누르 → 호치민 → 인천', move: true, photos: [], timeline: [
+      { num: 13, date: '2026-08-17', wk: '월', region: '귀국', title: '사누르 → 호치민 → 인천', move: true, photos: [{ src: 'photos/day13-1.jpg', caption: '덴파사르 공항 · 귀국길' }, { src: 'photos/day13-2.jpg', caption: '인천 도착' }], timeline: [
         { t: '09:30-10:30', text: '조식' },
         { t: '11:00-12:00', text: '독립기념일 이벤트 🇮🇩', hi: true },
         { t: '11:30', text: '자전거 반납' },
