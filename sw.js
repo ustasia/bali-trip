@@ -1,5 +1,6 @@
-// 발리 여행 가이드 Service Worker
-const CACHE_NAME = 'bali-guide-v15';
+// 발리 여행 가이드 Service Worker (v16)
+// 전략: HTML은 network-first, 나머지는 cache-first
+const CACHE_NAME = 'bali-guide-v16';
 const ASSETS = [
   './',
   './index.html',
@@ -26,17 +27,37 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// fetch: 캐시 우선, 없으면 네트워크 (오프라인 대응)
+// fetch: HTML은 network-first, 나머지는 cache-first
 self.addEventListener('fetch', (e) => {
-  // 외부 폰트·CDN은 네트워크 우선 시도 후 캐시
-  e.respondWith(
-    caches.match(e.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(e.request).then((res) => {
-        // 동일 출처 파일만 런타임 캐시에 추가
-        if (e.request.url.startsWith(self.location.origin)) {
+  const req = e.request;
+
+  // HTML 요청 (navigate 또는 .html) → 네트워크 우선
+  const isHtml = req.mode === 'navigate' ||
+                 req.destination === 'document' ||
+                 req.url.endsWith('.html');
+
+  if (isHtml) {
+    e.respondWith(
+      fetch(req).then((res) => {
+        // 성공하면 캐시 갱신 (오프라인 대비)
+        if (req.url.startsWith(self.location.origin)) {
           const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+        }
+        return res;
+      }).catch(() => caches.match(req))  // 오프라인 시만 캐시 폴백
+    );
+    return;
+  }
+
+  // 이미지·CSS·JS·JSON → 캐시 우선 (오프라인 성능 유지)
+  e.respondWith(
+    caches.match(req).then((cached) => {
+      if (cached) return cached;
+      return fetch(req).then((res) => {
+        if (req.url.startsWith(self.location.origin)) {
+          const resClone = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
         }
         return res;
       }).catch(() => cached);
